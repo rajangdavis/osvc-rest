@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"os"
+	"github.com/spf13/cobra"
+	"github.com/rajangdavis/ovsc-go/cmd"
+)
 
 func main() {
-    fmt.Println("Hello, World")
+	cmd.Execute()
 }
