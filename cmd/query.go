@@ -19,24 +19,9 @@ import (
 
 func runQuery(cmd *cobra.Command, args []string) error {
 
-	if annotation != "" && len(annotation) > 40 {
-		fmt.Println("Error: Annotation cannot be greater than 40 characters.")
-		os.Exit(0)
-	}else if version == "v1.4" && annotation == ""{
-		fmt.Println("Error: An Annotation must be set when using CCOM version v1.4 (e.g. -a \"40 character annotation\")")
-		os.Exit(0)
-	}
-
 	queryInit := []string{}
 
 	queryFinal := ""
-	domain :=""
-
-	if demoSite == true{
-		domain = "rightnowdemo"
-	}else{
-		domain = "custhelp"
-	}
 
 	if len(args) == 0{
 		fmt.Println("Error: Must set at least one query")
@@ -51,6 +36,31 @@ func runQuery(cmd *cobra.Command, args []string) error {
 	}
 
 
+	queryUrl := "queryResults?query=" + queryFinal
+
+
+
+
+
+
+	// put into connect.go
+
+	if annotation != "" && len(annotation) > 40 {
+		fmt.Println("Error: Annotation cannot be greater than 40 characters.")
+		os.Exit(0)
+	}else if version == "v1.4" && annotation == ""{
+		fmt.Println("Error: An Annotation must be set when using CCOM version v1.4 (e.g. -a \"40 character annotation\")")
+		os.Exit(0)
+	}
+
+	domain :=""
+
+	if demoSite == true{
+		domain = "rightnowdemo"
+	}else{
+		domain = "custhelp"
+	}
+
 	var client = &http.Client{}
     
     if noSslVerify == true{
@@ -61,7 +71,7 @@ func runQuery(cmd *cobra.Command, args []string) error {
     }
 
 	var url = "https://"+ interfaceName +"." + domain +".com/services/rest/connect/" + version + "/"
-	var finalUrl = url + "queryResults?query=" + queryFinal
+	var finalUrl = url + queryUrl
   	req, err := http.NewRequest("GET", finalUrl, nil)
     req.Header.Add("Authorization","Basic " + basicAuth(userName,password))
 
@@ -86,7 +96,22 @@ func runQuery(cmd *cobra.Command, args []string) error {
     if err != nil {
         panic(err)
     }
- 
+
+    // return bodyBytes
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 	// put into normalize.go
  	// handle JSON
     items, dataType, offset, err := jsonparser.Get(bodyBytes,"items")
 
