@@ -8,8 +8,8 @@ import (
 // report represents the report command
 var report = &cobra.Command{
 	Use:   "report",
-	Short: "",
-	Long:  "Runs an analytics report command",
+	Short: "Runs an analytics report command",
+	Long:  "Runs an analytics report command \nExample: \n$ osvc-rest",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("bye called")
 	},

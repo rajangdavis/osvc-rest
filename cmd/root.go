@@ -8,9 +8,9 @@ import (
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "osvc-go",
+	Use:   "osvc-rest",
 	Short: "OSvC REST CLI",
-	Long: `This is a Command Line Interface application to work with the Oracle Service Cloud REST API`,
+	Long: `osvc-rest - a Command Line Interface application to work with the Oracle Service Cloud REST API`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
