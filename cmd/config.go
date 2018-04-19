@@ -16,7 +16,7 @@ func checkAnnotation() error{
 	if annotation != "" && len(annotation) > 40 {
 		fmt.Println("\033[31mError: Annotation cannot be greater than 40 characters.")
 		os.Exit(0)
-	}else if version == "1.4" && annotation == ""{
+	}else if (version == "v1.4" || version == "latest") && annotation == ""{
 		fmt.Println("\033[31mError: An Annotation must be set when using CCOM version 1.4 (e.g. -a \"40 character annotation\")")
 		os.Exit(0)
 	}

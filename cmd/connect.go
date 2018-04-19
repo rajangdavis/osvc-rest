@@ -1,19 +1,29 @@
 package cmd
 
 import (
-	"fmt"
+    "fmt"
 	"os"
 	"net/http"
+    "io"
 	"io/ioutil"
 )
 
-func buildRequest(method, requestUrl string) (*http.Request, error, string){
-	var url = "https://"+ interfaceName +"." + setDomain() +".com/services/rest/connect/v" + version + "/"
+func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string){
+	var url = "https://"+ interfaceName +"." + setDomain() +".com/services/rest/connect/" + version + "/"
 	var finalUrl = url + requestUrl
-  	req, err := http.NewRequest("GET", finalUrl, nil)
+    var req *http.Request
+    var err error
+
+    if method == "POST"{
+        req, err = http.NewRequest(method, finalUrl, jsonData)
+        req.Header.Set("Content-Type", "application/json")
+    }else{
+        req, err = http.NewRequest(method, finalUrl, nil)
+    }
+
     req.Header.Add("Authorization","Basic " + basicAuth(userName,password))
 
-    if version == "1.4" && annotation != "" && len(annotation) <= 40{
+    if (version == "v1.4" || version == "latest") && annotation != "" && len(annotation) <= 40{
 	    req.Header.Add("OSvC-CREST-Application-Context", annotation)	
     }
 
@@ -23,10 +33,10 @@ func buildRequest(method, requestUrl string) (*http.Request, error, string){
     return req, err, url
 }
 
-func connect(requestType string,requestUrl string) []byte{
+func connect(requestType string,requestUrl string, jsonData io.Reader) []byte{
 	checkAnnotation()
 	var client = checkSSL()
-	req,err, url := buildRequest(requestType,requestUrl)
+	req,err, url := buildRequest(requestType,requestUrl,jsonData)
     rs, err := client.Do(req)
 
     if err != nil {

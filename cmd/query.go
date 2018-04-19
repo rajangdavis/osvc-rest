@@ -29,8 +29,8 @@ func runQuery(cmd *cobra.Command, args []string) error {
 
 	queryFinal := queryCheck(args)
 	queryUrl := "queryResults?query=" + queryFinal
-	bodyBytes := connect("GET",queryUrl)
-	normalize(bodyBytes)
+	bodyBytes := connect("GET",queryUrl,nil)
+	normalizeQuery(bodyBytes)
 	return nil
 }
 
