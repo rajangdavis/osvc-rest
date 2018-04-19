@@ -22,18 +22,24 @@ You will want to create a folder exclusively for your Go projects.
 Go works everywhere; [learn how at this link.](https://dave.cheney.net/2015/08/22/cross-compilation-with-go-1-5)
 
 ## Usage
-	$ osvc-rest --help
-	osvc-rest - a Command Line Interface application to work with the Oracle Service Cloud REST API
+	$osvc-rest [command]
 
-	Usage:
-	  osvc-rest [command]
+## Available Commands:
+	help        Help about any command
+	Example:
+	$ osvc-rest [command] --help
 
-	Available Commands:
-	  help        Help about any command
-	  query       Runs one or more ROQL queries
-	  report      Runs an analytics report command
+	query       Runs one or more ROQL queries and returns parsed results
+	Single Query Example:
+	$ osvc-rest query "DESCRIBE" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
+	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-	Flags:
+	report      Runs an analytics report and returns parsed results
+	Report (without filters) Example:
+	$ osvc-rest report --id 186 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+## Flags:
 	  -a, --annotate string    Adds a custom header that adds an annotation
 	      --demosite           Change the domain from 'custhelp' to 'rightnowdemo'
 	  -e, --exclude-null       Adds a custom header to excludes null from results
