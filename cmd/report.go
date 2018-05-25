@@ -55,6 +55,4 @@ func init() {
 	report.Flags().StringVarP(&filters,"filters","f","", "Adds filters for reporting")
 	report.Flags().StringVarP(&lookupName,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
 	report.Flags().IntVarP(&id, "id", "",0, "Sets the id of the AnalyticsReport that we wish to run")
-	// report.Flags().IntVarP(&id, "id", "",0, "Adds a custom header that adds an annotation") add one for offset
-	// report.Flags().IntVarP(&id, "id", "",0, "Adds a custom header that adds an annotation")
 }
