@@ -45,14 +45,13 @@ func runHttp(cmd *cobra.Command, args []string) error {
 	
 	for i := 0; i < resourceUrlsCount; i++ {
 		go makeRequest(httpVerb,resourceUrls[i], nil, ch)	
-		fmt.Fprintf(os.Stdout, "%s", <-ch)
+
 		if resourceUrlsCount > 1{
 			fmt.Fprintf(os.Stdout, "\n")
 		}
+		
+		fmt.Fprintf(os.Stdout, "%s", <-ch)
 	}
-
-	
-
 
 	return nil
 }
@@ -64,9 +63,21 @@ var get = &cobra.Command{
 	RunE: runHttp,
 }
 
+
+// TODO 
+	// update 
+		// http get
+		
+	// add functionality for 
+		// post
+		// puts
+		// delete
+		
+		// file attachments
+		// exclude null data
+
+	// add validations
+
 func init(){
 	RootCmd.AddCommand(get)
-	// report.Flags().StringVarP(&verb,"filters","f","", "Adds filters for reporting")
-	// report.Flags().StringVarP(&lookupName,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
-	// report.Flags().IntVarP(&id, "id", "",0, "Sets the id of the AnalyticsReport that we wish to run")
 }
