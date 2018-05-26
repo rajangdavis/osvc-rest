@@ -5,6 +5,7 @@ import (
 	"strings"
 	"os"
 	"io"
+	"net/url"
 	"github.com/spf13/cobra"
 	"github.com/tidwall/gjson"
 	"encoding/json"
@@ -17,7 +18,8 @@ func httpCheck(args []string) []string {
 		os.Exit(0)
 	}else{
 		for i := 0; i < len(args); i++ {
-			resourceUrls = append(resourceUrls,args[i])
+			urlToEncode := url.PathEscape(strings.Replace(args[i],"?","XXX_REPLACE_QUESTION_MARK_XXX",-1))
+			resourceUrls = append(resourceUrls, strings.Replace(urlToEncode,"XXX_REPLACE_QUESTION_MARK_XXX","?",-1))
 		}
 	}
 	return resourceUrls

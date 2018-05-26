@@ -8,25 +8,31 @@ import (
 	"encoding/json"
 )
 
-func iterateThroughRows(item []byte, arrayToMod [][]map[string]string) [][]map[string]string{
+func iterateThroughRows(item []byte, arrayToMod [][]map[string]interface{}) [][]map[string]interface{} {
 	val := item
 	
 	columnNames, _, _, _ := jsonparser.Get(val,"columnNames")
 	rows, _, _, _ := jsonparser.Get(val,"rows")
 
-	var itemArray []map[string]string
+	var itemArray []map[string]interface{}
 
 	jsonparser.ArrayEach(rows, func(row []byte, dataType jsonparser.ValueType, offset int, err error) {
 
-		resultsHash := make(map[string]string)
+		resultsHash := make(map[string]interface{})
 
 		columnIndex := 0
 		jsonparser.ArrayEach(columnNames, func(column []byte, columnDataType jsonparser.ValueType, offset int, err error) {
 
 			thisRow, _, _, err := jsonparser.Get(row,"[" + strconv.Itoa(columnIndex) + "]")
+
     		parsedColumn, _ := jsonparser.ParseString(column)
-    		parsedRow, _ := jsonparser.ParseString(thisRow)
-    		resultsHash[parsedColumn] = parsedRow
+    		if _, err := strconv.Atoi(string(thisRow)); err == nil{
+    			parsedRow, _ := jsonparser.ParseInt(thisRow)
+    			resultsHash[parsedColumn] = parsedRow
+			}else{
+				parsedRow, _ := jsonparser.ParseString(thisRow)
+    			resultsHash[parsedColumn] = parsedRow
+			}
     		var newIndex = columnIndex + 1
     		columnIndex = newIndex
     	})
@@ -43,20 +49,28 @@ func normalizeReport(byteData []byte){
     columnNames, _, _, _ := jsonparser.Get(byteData,"columnNames")
 	rows, _, _, _ := jsonparser.Get(byteData,"rows")
 
-    var results [][]map[string]string
-	var itemArray []map[string]string
+    var results [][]map[string]interface{}
+	var itemArray []map[string]interface{}
 
 	jsonparser.ArrayEach(rows, func(row []byte, dataType jsonparser.ValueType, offset int, err error) {
 
-		resultsHash := make(map[string]string)
+		resultsHash := make(map[string]interface{})
 
 		columnIndex := 0
+
 		jsonparser.ArrayEach(columnNames, func(column []byte, columnDataType jsonparser.ValueType, offset int, err error) {
 
 			thisRow, _, _, err := jsonparser.Get(row,"[" + strconv.Itoa(columnIndex) + "]")
     		parsedColumn, _ := jsonparser.ParseString(column)
-    		parsedRow, _ := jsonparser.ParseString(thisRow)
-    		resultsHash[parsedColumn] = parsedRow
+
+    		if _, err := strconv.Atoi(string(thisRow)); err == nil{
+    			parsedRow, _ := jsonparser.ParseInt(thisRow)
+    			resultsHash[parsedColumn] = parsedRow
+			}else{
+				parsedRow, _ := jsonparser.ParseString(thisRow)
+    			resultsHash[parsedColumn] = parsedRow
+			}
+
     		var newIndex = columnIndex + 1
     		columnIndex = newIndex
     	})
@@ -70,7 +84,7 @@ func normalizeReport(byteData []byte){
 
 }
 
-func normalizeQuery(byteData []byte){
+func normalizeQuery(byteData []byte) [][]map[string]interface{}{
 
 	items, dataType, offset, err := jsonparser.Get(byteData,"items")
 
@@ -81,18 +95,12 @@ func normalizeQuery(byteData []byte){
     	os.Exit(0)
     }   
 
-    var results [][]map[string]string
+    var results [][]map[string]interface{}
 
     jsonparser.ArrayEach(items, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
     	results = iterateThroughRows(value,results)
 	})
 
-    if len(results) == 1{
-    	jsonData, _ := json.MarshalIndent(results[0],"","  ")
-		fmt.Fprintf(os.Stdout, "%s", jsonData)
-	}else{
-    	jsonData, _ := json.MarshalIndent(results,"","  ")
-		fmt.Fprintf(os.Stdout, "%s", jsonData)
-	}
+	return results    
 
 }

@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"github.com/spf13/cobra"
+	"encoding/json"
 )
 
 func queryCheck(args []string) string {
@@ -30,7 +31,16 @@ func runQuery(cmd *cobra.Command, args []string) error {
 	queryFinal := queryCheck(args)
 	queryUrl := "queryResults?query=" + queryFinal
 	bodyBytes := connect("GET",queryUrl,nil)
-	normalizeQuery(bodyBytes)
+	results := normalizeQuery(bodyBytes)
+
+	if len(results) == 1{
+    	jsonData, _ := json.MarshalIndent(results[0],"","  ")
+		fmt.Fprintf(os.Stdout, "%s", jsonData)
+	}else{
+    	jsonData, _ := json.MarshalIndent(results,"","  ")
+		fmt.Fprintf(os.Stdout, "%s", jsonData)
+	}
+
 	return nil
 }
 

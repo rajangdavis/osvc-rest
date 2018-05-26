@@ -11,6 +11,7 @@ import (
 func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string){
 	var url = "https://"+ interfaceName +"." + setDomain() +".com/services/rest/connect/" + version + "/"
 	var finalUrl = url + requestUrl
+
     var req *http.Request
     var err error
 
@@ -36,7 +37,9 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 func connect(requestType string,requestUrl string, jsonData io.Reader) []byte{
 	checkAnnotation()
 	var client = checkSSL()
-	req,err, url := buildRequest(requestType,requestUrl,jsonData)
+	
+    req, err, url := buildRequest(requestType,requestUrl,jsonData)
+    
     rs, err := client.Do(req)
 
     if err != nil {
