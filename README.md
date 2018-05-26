@@ -15,42 +15,36 @@ You will want to create a folder exclusively for your Go projects.
 ## TODO 
 		
 ### add functionality for 
-1. post requests
-2. puts requests
-3. delete requests
 		
 1. file attachments 
 	1. download
 	2.  upload
 2. exclude null data
+3. osvc-crest-api-access-token
+4. osvc-crest-next-request-after
+5. Session Authorization
+6. OAuth Authorization
 	
 ### update 
 1. reports to take filters
 2. add validations
    
-## Installation
+<!-- ## Installation
 
     $ cd ..<go projects folder>
     $ git clone https://github.com/rajangdavis/osvc-rest.git
     $ go build
-   
+
 ## Compatibility
 
-Go works everywhere; [learn how at this link.](https://dave.cheney.net/2015/08/22/cross-compilation-with-go-1-5)
+Go works everywhere; [learn how at this link.](https://dave.cheney.net/2015/08/22/cross-compilation-with-go-1-5) -->
 
 ## Usage
 	$osvc-rest [command]
 
 ## Available Commands:
 
-### help
-
-Help about any command
-
-	Example:
-	$ osvc-rest [command] --help
-
-### query
+### Running one or more ROQL queries
 Runs one or more ROQL queries and returns parsed results
 	
 	Single Query Example:
@@ -59,13 +53,30 @@ Runs one or more ROQL queries and returns parsed results
 	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
 	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-### report
+### Running Reports
 Runs an analytics report and returns parsed results
 
 	Report (without filters) Example:
 	$ osvc-rest report --id 186 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
+### HTTP Methods
+HTTP Methods Example:
 
+In order to create a resource, you must use the *post* command to send JSON data to the resource of your choice
+
+	$ osvc-rest post "opportunities" --data '{"name":"TEST"}' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+In order to fetch a resource, you must use the *get* command to request JSON data from the resource of your choice
+	
+	$ osvc-rest get "opportunities/?q=name like 'TEST'" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	
+In order to update a resource, you must use the *patch* command to send JSON data to update the resource of your choice
+
+	$ osvc-rest patch "opportunities/5" --data '{"name":"updated NAME for TEST"}'  -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+In order to delete a resource, you must use the *delete* command to delete the resource of your choice
+	
+	$ osvc-rest delete "opportunities/5" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 
 ## Flags:

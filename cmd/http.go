@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 	"os"
+	"bytes"
 	"io"
-	"net/url"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/tidwall/gjson"
 	"encoding/json"
 )
@@ -18,8 +19,8 @@ func httpCheck(args []string) []string {
 		os.Exit(0)
 	}else{
 		for i := 0; i < len(args); i++ {
-			urlToEncode := url.PathEscape(strings.Replace(args[i],"?","XXX_REPLACE_QUESTION_MARK_XXX",-1))
-			resourceUrls = append(resourceUrls, strings.Replace(urlToEncode,"XXX_REPLACE_QUESTION_MARK_XXX","?",-1))
+			resourceUrls = append(resourceUrls,args[i])
+
 		}
 	}
 	return resourceUrls
@@ -44,13 +45,11 @@ func runHttp(cmd *cobra.Command, args []string) error {
 	httpVerb := strings.ToUpper(cmd.Use)
 
 	ch := make(chan []byte)
+
+	jsonData := bytes.NewReader([]byte(data))
 	
 	for i := 0; i < resourceUrlsCount; i++ {
-		go makeRequest(httpVerb,resourceUrls[i], nil, ch)	
-
-		if resourceUrlsCount > 1{
-			fmt.Fprintf(os.Stdout, "\n")
-		}
+		go makeRequest(httpVerb,resourceUrls[i], jsonData, ch)
 		
 		fmt.Fprintf(os.Stdout, "%s", <-ch)
 	}
@@ -65,16 +64,13 @@ var get = &cobra.Command{
 	RunE: runHttp,
 }
 
+// , fileData
+var data string
 
+func checkPostPatchFlags(flags *pflag.FlagSet) error {
 
-
-var lookupName, filters string
-
-
-func checkPostPutFlags(flags *pflag.FlagSet) error {
-
-	if data == "" && id == 0 {
-		fmt.Println("\033[31mError: Must use either the --name or --id flag with for working with the AnalyticsReportResults object")
+	if data == "" {
+		fmt.Println("\033[31mError: Must send JSON Data for POST and PATCH requests; use the --data flag")
 		os.Exit(0)
 	}
 
@@ -84,16 +80,36 @@ func checkPostPutFlags(flags *pflag.FlagSet) error {
 var post = &cobra.Command{
 	Use: "post",
 	Short: "Performs a POST request",
-	Long: "\033[93mPerforms a POST request and returns parsed results\033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest post \"incidents\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
+	Long: "\033[93mPerforms a POST request and returns parsed results\033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest post \"opportunities\" --data '{\"name\":\"PCS- 100 laptops\"}' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
 	PreRunE:func(cmd *cobra.Command, args []string) error {		
-		return checkPostPutFlags(cmd.Flags())
+		return checkPostPatchFlags(cmd.Flags())
 	},
+	RunE: runHttp,
+}
+
+var patch = &cobra.Command{
+	Use: "patch",
+	Short: "Performs a PATCH request",
+	Long: "\033[93mPerforms a PATCH request; if successful, nothing is returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest patch \"opportunities/1\" --data '{\"name\":\"PCS- 100 laptops UPDATED\"}' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
+	PreRunE:func(cmd *cobra.Command, args []string) error {		
+		return checkPostPatchFlags(cmd.Flags())
+	},
+	RunE: runHttp,
+}
+
+var delete = &cobra.Command{
+	Use: "delete",
+	Short: "Performs a DELETE request",
+	Long: "\033[93mPerforms a DELETE request; if successful, nothing is returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest delete \"opportunities/1\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
 	RunE: runHttp,
 }
 
 func init(){
 	RootCmd.AddCommand(get)
-	post.Flags().StringVarP(&filters,"filters","f","", "Adds filters for reporting")
-	post.Flags().StringVarP(&lookupName,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
+	// post.Flags().StringVarP(&fileData,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
+	post.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
+	patch.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
 	RootCmd.AddCommand(post)
+	RootCmd.AddCommand(patch)
+	RootCmd.AddCommand(delete)
 }
