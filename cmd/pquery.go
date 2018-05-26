@@ -3,20 +3,14 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"github.com/spf13/cobra"
 	"encoding/json"
 	"net/url"
 )
 
 func pqueryCheck(args []string) []string {
 	queriesArray := []string{}
-	if len(args) <= 1{
-		fmt.Println("Error: Must set at least two queries")
-		os.Exit(0)
-	}else{
-		for i := 0; i < len(args); i++ {
-			queriesArray = append(queriesArray,args[i])
-		}
+	for i := 0; i < len(args); i++ {
+		queriesArray = append(queriesArray,args[i])
 	}
 	return queriesArray
 }
@@ -40,7 +34,7 @@ func runParallelQueries(urls []string) <- chan [][]map[string]interface{}{
 	return ch
 } 
 
-func printParallelQueries(cmd *cobra.Command, args []string) error {
+func printParallelQueries(args []string) error {
 	
 	var queriesToRun = pqueryCheck(args)
 	results := runParallelQueries(queriesToRun)
@@ -57,15 +51,4 @@ func printParallelQueries(cmd *cobra.Command, args []string) error {
 	fmt.Fprintf(os.Stdout, "%s", jsonData)
 	return nil
 	
-}
-
-var pquery = &cobra.Command{
-	Use: "pquery",
-	Short: "Runs multiple ROQL queries in parallel",
-	Long: "\033[93mRuns multiple ROQL queries in parallel and returns parsed results\033[0m \033[0;32m\n\nExample:\033[0m \n$ osvc-rest pquery \"SELECT * FROM INCIDENTS\" \"SELECT * FROM INCIDENTS OFFSET 20000\" \"SELECT * FROM INCIDENTS OFFSET 40000\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
-	RunE: printParallelQueries,
-}
-
-func init(){
-	RootCmd.AddCommand(pquery)
 }

@@ -42,13 +42,6 @@ Runs one or more ROQL queries and returns parsed results
 	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
 	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-### pquery
-
-Runs multiple ROQL queries in parallel and returns parsed results
-
-	Example:
-	$ osvc-rest pquery "SELECT * FROM INCIDENTS" "SELECT * FROM INCIDENTS OFFSET 20000" "SELECT * FROM INCIDENTS OFFSET 40000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
-
 ### report
 Runs an analytics report and returns parsed results
 

@@ -67,8 +67,6 @@ var get = &cobra.Command{
 
 
 // TODO 
-	// update 
-		// http get
 		
 	// add functionality for 
 		// post
@@ -77,6 +75,8 @@ var get = &cobra.Command{
 		
 		// file attachments
 		// exclude null data
+	// update 
+		// reports to take filters
 
 	// add validations
 
