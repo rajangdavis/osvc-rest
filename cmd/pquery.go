@@ -30,7 +30,7 @@ func asyncQuery(resourceUrl string, ch chan <- []map[string]interface{}){
 func runParallelQueries(urls []string) <- chan []map[string]interface{}{
 
 	ch := make(chan []map[string]interface{}, len(urls))
-		
+
 	for i := 0; i < len(urls); i++ {
 
 		queryUrl := "queryResults?query=" + url.PathEscape(urls[i])
@@ -44,7 +44,7 @@ func printParallelQueries(cmd *cobra.Command, args []string) error {
 	
 	var queriesToRun = pqueryCheck(args)
 	results := runParallelQueries(queriesToRun)
-	var finalResults = make([]map[string]interface{}, len(queriesToRun))
+	var finalResults = make([]map[string]interface{}, 0)
 
 	for _ = range queriesToRun {
 		result := <-results
