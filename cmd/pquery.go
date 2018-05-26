@@ -21,15 +21,15 @@ func pqueryCheck(args []string) []string {
 	return queriesArray
 }
 
-func asyncQuery(resourceUrl string, ch chan <- []map[string]interface{}){
+func asyncQuery(resourceUrl string, ch chan <- [][]map[string]interface{}){
 	bodyBytes := connect("GET", resourceUrl, nil)
 	initResult := normalizeQuery(bodyBytes)
-	ch <- initResult[0]
+	ch <- initResult
 }
 
-func runParallelQueries(urls []string) <- chan []map[string]interface{}{
+func runParallelQueries(urls []string) <- chan [][]map[string]interface{}{
 
-	ch := make(chan []map[string]interface{}, len(urls))
+	ch := make(chan [][]map[string]interface{}, len(urls))
 
 	for i := 0; i < len(urls); i++ {
 
@@ -44,7 +44,7 @@ func printParallelQueries(cmd *cobra.Command, args []string) error {
 	
 	var queriesToRun = pqueryCheck(args)
 	results := runParallelQueries(queriesToRun)
-	var finalResults = make([]map[string]interface{}, 0)
+	var finalResults = make([][]map[string]interface{}, 0)
 
 	for _ = range queriesToRun {
 		result := <-results
