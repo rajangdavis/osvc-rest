@@ -25,12 +25,14 @@ Go works everywhere; [learn how at this link.](https://dave.cheney.net/2015/08/2
 	$osvc-rest [command]
 
 ## Available Commands:
+
+### help
 	help        Help about any command
 
 	Example:
 	$ osvc-rest [command] --help
 
-
+### query
 	query       Runs one or more ROQL queries and returns parsed results
 	
 	Single Query Example:
@@ -39,11 +41,14 @@ Go works everywhere; [learn how at this link.](https://dave.cheney.net/2015/08/2
 	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
 	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-
+### report
 	report      Runs an analytics report and returns parsed results
 
 	Report (without filters) Example:
 	$ osvc-rest report --id 186 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+
+
 
 ## Flags:
 	  -a, --annotate string    Adds a custom header that adds an annotation
