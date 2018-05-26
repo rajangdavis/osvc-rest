@@ -60,7 +60,6 @@ Runs an analytics report and returns parsed results
 	$ osvc-rest report --id 186 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 ### HTTP Methods
-HTTP Methods Example:
 
 In order to create a resource, you must use the *post* command to send JSON data to the resource of your choice
 
