@@ -15,18 +15,18 @@ You will want to create a folder exclusively for your Go projects.
 ## TODO 
 		
 ### add functionality for 
-post requests
-puts requests
-delete requests
+1. post requests
+2. puts requests
+3. delete requests
 		
-file attachments 
-	* download
-	* upload
-exclude null data
+1. file attachments 
+	1. download
+	2.  upload
+2. exclude null data
 	
 ### update 
-	reports to take filters
-	add validations
+1. reports to take filters
+2. add validations
    
 ## Installation
 
