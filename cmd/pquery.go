@@ -62,7 +62,7 @@ func printParallelQueries(cmd *cobra.Command, args []string) error {
 var pquery = &cobra.Command{
 	Use: "pquery",
 	Short: "Runs multiple ROQL queries in parallel",
-	Long: "\033[93mRuns one or more ROQL queries and returns parsed results\033[0m \033[0;32m\n\nMultiple Queries Example:\033[0m \n$ osvc-rest pquery \"SELECT * FROM INCIDENTS\" \"SELECT * FROM INCIDENTS OFFSET 20000\" \"SELECT * FROM INCIDENTS OFFSET 40000\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
+	Long: "\033[93mRuns multiple ROQL queries in parallel and returns parsed results\033[0m \033[0;32m\n\nExample:\033[0m \n$ osvc-rest pquery \"SELECT * FROM INCIDENTS\" \"SELECT * FROM INCIDENTS OFFSET 20000\" \"SELECT * FROM INCIDENTS OFFSET 40000\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
 	RunE: printParallelQueries,
 }
 
