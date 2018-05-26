@@ -60,26 +60,40 @@ func runHttp(cmd *cobra.Command, args []string) error {
 
 var get = &cobra.Command{
 	Use: "get",
-	Short: "Runs one or more GET requests",
-	Long: "\033[93mRuns one or more GET requests and returns parsed results\033[0m \033[0;32m\n\nSingle Query Example: \033[0m \n$ osvc-rest query \"DESCRIBE\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE \033[0;32m\n\nMultiple Queries Example:\033[0m \n$ osvc-rest query \"SELECT * FROM INCIDENTS LIMIT 100\" \"SELECT * FROM SERVICEPRODUCTS LIMIT 100\" \"SELECT * FROM SERVICECATEGORIES LIMIT 100\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
+	Short: "Performs one or more GET requests",
+	Long: "\033[93mPerforms one or more GET requests and returns parsed results\033[0m \033[0;32m\n\nSingle Query Example: \033[0m \n$ osvc-rest query \"DESCRIBE\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE \033[0;32m\n\nMultiple Queries Example:\033[0m \n$ osvc-rest query \"SELECT * FROM INCIDENTS LIMIT 100\" \"SELECT * FROM SERVICEPRODUCTS LIMIT 100\" \"SELECT * FROM SERVICECATEGORIES LIMIT 100\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
 	RunE: runHttp,
 }
 
 
-// TODO 
-		
-	// add functionality for 
-		// post
-		// puts
-		// delete
-		
-		// file attachments
-		// exclude null data
-	// update 
-		// reports to take filters
 
-	// add validations
+
+var lookupName, filters string
+
+
+func checkPostPutFlags(flags *pflag.FlagSet) error {
+
+	if data == "" && id == 0 {
+		fmt.Println("\033[31mError: Must use either the --name or --id flag with for working with the AnalyticsReportResults object")
+		os.Exit(0)
+	}
+
+	return nil
+}
+
+var post = &cobra.Command{
+	Use: "post",
+	Short: "Performs a POST request",
+	Long: "\033[93mPerforms a POST request and returns parsed results\033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest post \"incidents\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
+	PreRunE:func(cmd *cobra.Command, args []string) error {		
+		return checkPostPutFlags(cmd.Flags())
+	},
+	RunE: runHttp,
+}
 
 func init(){
 	RootCmd.AddCommand(get)
+	post.Flags().StringVarP(&filters,"filters","f","", "Adds filters for reporting")
+	post.Flags().StringVarP(&lookupName,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
+	RootCmd.AddCommand(post)
 }

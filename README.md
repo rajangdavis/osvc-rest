@@ -10,6 +10,23 @@ Make sure that you follow the instructions about adding system variables.
 You will want to create a folder exclusively for your Go projects.
 
 [Read more about what you will need to set up to get Go-ing. (I'm sorry for the bad pun)](https://github.com/golang/go/wiki/SettingGOPATH)
+
+
+## TODO 
+		
+### add functionality for 
+post requests
+puts requests
+delete requests
+		
+file attachments 
+	* download
+	* upload
+exclude null data
+	
+### update 
+	reports to take filters
+	add validations
    
 ## Installation
 

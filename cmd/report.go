@@ -51,8 +51,8 @@ var report = &cobra.Command{
 }
 
 func init() {
-	RootCmd.AddCommand(report)
 	report.Flags().StringVarP(&filters,"filters","f","", "Adds filters for reporting")
 	report.Flags().StringVarP(&lookupName,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
 	report.Flags().IntVarP(&id, "id", "",0, "Sets the id of the AnalyticsReport that we wish to run")
+	RootCmd.AddCommand(report)
 }
