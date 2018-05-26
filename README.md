@@ -2,14 +2,14 @@
 
 An (under development) CLI for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/) written in Go.
 
-## Installing Go (for Windows)
+<!-- ## Installing Go (for Windows)
 [Installation options are available on the Go website](https://golang.org/doc/install#windows).
 
 Make sure that you follow the instructions about adding system variables.
 
 You will want to create a folder exclusively for your Go projects.
 
-[Read more about what you will need to set up to get Go-ing. (I'm sorry for the bad pun)](https://github.com/golang/go/wiki/SettingGOPATH)
+[Read more about what you will need to set up to get Go-ing. (I'm sorry for the bad pun)](https://github.com/golang/go/wiki/SettingGOPATH) -->
 
 
 ## TODO 
