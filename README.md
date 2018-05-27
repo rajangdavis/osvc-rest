@@ -45,28 +45,28 @@ All the of HTTP Methods have the following formula:
 
 
 ### POST
-In order to create a resource, you must use the _post_ command to send JSON data to the resource of your choice
+In order to create a resource, you must use the **post** command to send JSON data to the resource of your choice
 
 	$ osvc-rest post "opportunities" --data '{"name":"TEST"}' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 
 ### GET
-In order to fetch a resource, you must use the _get_ command to request JSON data from the resource of your choice
+In order to fetch a resource, you must use the **get** command to request JSON data from the resource of your choice
 	
 	$ osvc-rest get "opportunities/?q=name like 'TEST'" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 	
 ### PATCH	
-In order to update a resource, you must use the _patch_ command to send JSON data to update the resource of your choice
+In order to update a resource, you must use the **patch** command to send JSON data to update the resource of your choice
 
 	$ osvc-rest patch "opportunities/5" --data '{"name":"updated NAME for TEST"}'  -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 ### DELETE
-In order to delete a resource, you must use the _delete_ command to delete the resource of your choice
+In order to delete a resource, you must use the **delete** command to delete the resource of your choice
 	
 	$ osvc-rest delete "opportunities/5" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 ### OPTIONS
-To review the options of what HTTP verbs you can use against a resource, use the _options_ command
+To review the options of what HTTP verbs you can use against a resource, use the **options** command
 	
 	$ osvc-rest options "opportunities" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
