@@ -1,105 +1,104 @@
 package cmd
 
 import (
-    "fmt"
-	"os"
-	"net/http"
-    "net/http/httputil"
-    "io"
+	"fmt"
+	"io"
 	"io/ioutil"
-    "strings"
-    "strconv"
+	"net/http"
+	"net/http/httputil"
+	"os"
+	"strconv"
+	"strings"
 )
 
-func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string){
-	var baseUrl = "https://"+ interfaceName +"." + setDomain() +".com/services/rest/connect/" + version + "/"
-	var finalUrl = baseUrl + strings.Replace(requestUrl," ","%20",-1)
+func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string) {
+	var baseUrl = "https://" + interfaceName + "." + setDomain() + ".com/services/rest/connect/" + version + "/"
+	var finalUrl = baseUrl + strings.Replace(requestUrl, " ", "%20", -1)
 
-    var req *http.Request
-    var err error
+	var req *http.Request
+	var err error
 
-    if method == "POST" || method == "PATCH"{
-        req, err = http.NewRequest("POST", finalUrl, jsonData)
-        req.Header.Set("Content-Type", "application/json")
-        if method == "PATCH"{
-            req.Header.Set("X-HTTP-Method-Override", "PATCH")
-        }
-    }else{
-        req, err = http.NewRequest(method, finalUrl, nil)
-    }
+	if method == "POST" || method == "PATCH" {
+		req, err = http.NewRequest("POST", finalUrl, jsonData)
+		req.Header.Set("Content-Type", "application/json")
+		if method == "PATCH" {
+			req.Header.Set("X-HTTP-Method-Override", "PATCH")
+		}
+	} else {
+		req, err = http.NewRequest(method, finalUrl, nil)
+	}
 
-    req.Header.Add("Authorization","Basic " + basicAuth(userName,password))
+	req.Header.Add("Authorization", "Basic "+basicAuth(userName, password))
 
-    if (version == "v1.4" || version == "latest") && annotation != "" && len(annotation) <= 40{
-	    req.Header.Add("OSvC-CREST-Application-Context", annotation)	
-    }
+	if (version == "v1.4" || version == "latest") && annotation != "" && len(annotation) <= 40 {
+		req.Header.Add("OSvC-CREST-Application-Context", annotation)
+	}
 
-    if excludeNull == true{
-        req.Header.Add("prefer", "exclude-null-properties")    
-    }
-    
-    if utcTime == true{
-	    req.Header.Add("OSvC-CREST-Time-UTC", "yes")
-    }
+	if excludeNull == true {
+		req.Header.Add("prefer", "exclude-null-properties")
+	}
 
-    if schema == true{
-        req.Header.Add("Accept", "application/schema+json")
-    }
+	if utcTime == true {
+		req.Header.Add("OSvC-CREST-Time-UTC", "yes")
+	}
 
-    if accessToken != ""{
-        req.Header.Add("osvc-crest-api-access-token", accessToken)
-    }
+	if schema == true {
+		req.Header.Add("Accept", "application/schema+json")
+	}
 
-    if nextRequest > 0 {
-        req.Header.Add("osvc-crest-next-request-after", strconv.Itoa(nextRequest))
-    }
+	if accessToken != "" {
+		req.Header.Add("osvc-crest-api-access-token", accessToken)
+	}
 
-    if debug == true{
-        requestDump, err := httputil.DumpRequest(req, true)
-        if err != nil {
-          fmt.Println(err)
-        }
-        fmt.Println(string(requestDump))
-    }
+	if nextRequest > 0 {
+		req.Header.Add("osvc-crest-next-request-after", strconv.Itoa(nextRequest))
+	}
 
-    return req, err, baseUrl
+	if debug == true {
+		requestDump, err := httputil.DumpRequest(req, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println(string(requestDump))
+	}
+
+	return req, err, baseUrl
 }
 
-func connect(requestType string,requestUrl string, jsonData io.Reader) []byte{
+func connect(requestType string, requestUrl string, jsonData io.Reader) []byte {
 	checkAnnotation()
 	var client = checkSSL()
-	
-    req, err, url := buildRequest(requestType,requestUrl,jsonData)
-    
-    rs, err := client.Do(req)
 
-    if err != nil {
-        fmt.Println(err)
-        fmt.Println("\033[31mError: Could not connect to site '" + url + "'")
-        os.Exit(1)
-    }
-    defer rs.Body.Close()
- 
-    if (requestType == "PATCH" || requestType == "DELETE") && rs.StatusCode == 200 {
-        os.Exit(0)
-    }
+	req, err, url := buildRequest(requestType, requestUrl, jsonData)
 
-    var bodyBytes []byte
+	rs, err := client.Do(req)
 
-    if requestType == "OPTIONS" {
-        responseDump, err := httputil.DumpResponse(rs, true)
-        if err != nil {
-          fmt.Println(err)
-        }
-        bodyBytes = responseDump
-    }else{
-        bodyBytes, err = ioutil.ReadAll(rs.Body)
-    }
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("\033[31mError: Could not connect to site '" + url + "'")
+		os.Exit(1)
+	}
+	defer rs.Body.Close()
 
-    
-    if err != nil {
-        panic(err)
-    }
+	if (requestType == "PATCH" || requestType == "DELETE") && rs.StatusCode == 200 {
+		os.Exit(0)
+	}
 
-    return bodyBytes
+	var bodyBytes []byte
+
+	if requestType == "OPTIONS" {
+		responseDump, err := httputil.DumpResponse(rs, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+		bodyBytes = responseDump
+	} else {
+		bodyBytes, err = ioutil.ReadAll(rs.Body)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	return bodyBytes
 }

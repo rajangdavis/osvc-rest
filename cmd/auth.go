@@ -1,6 +1,6 @@
 package cmd
 
-import 	"encoding/base64"
+import "encoding/base64"
 
 func basicAuth(username, password string) string {
 	auth := username + ":" + password
