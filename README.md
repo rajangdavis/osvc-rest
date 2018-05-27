@@ -6,22 +6,15 @@ An (under development) CLI for using the [Oracle Service Cloud REST API](https:/
 		
 ### add functionality for 
 		
-1. file attachments 
-	2.  upload
-3. osvc-crest-api-access-token
-4. osvc-crest-next-request-after
-5. Session Authorization
-6. OAuth Authorization
-	
-### update
-2. add validations
-
-## Usage
-	$osvc-rest [command]
+1. file attachments upload on POST requests
+2. osvc-crest-api-access-token
+3. osvc-crest-next-request-after
+4. Session Authorization
+5. OAuth Authorization
 
 ## Available Commands:
 
-### Runngoing one or more ROQL queries
+### Running one or more ROQL queries
 Runs one or more ROQL queries and returns parsed results
 	
 	Single Query Example:
@@ -34,8 +27,10 @@ Runs one or more ROQL queries and returns parsed results
 Runs an analytics report and returns parsed results
 
 	Report (without filters) Example:
-	$ osvc-rest report --id 186 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	$ osvc-rest report --id 176 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
+	Report (with filters and limiting) Example:
+	$ osvc-rest report --id 176 --limit 10 --filters '[{"name":"search_ex","values":"returns"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 ### HTTP Methods
 
 In order to create a resource, you must use the _post_ command to send JSON data to the resource of your choice
@@ -54,7 +49,9 @@ In order to delete a resource, you must use the _delete_ command to delete the r
 	
 	$ osvc-rest delete "opportunities/5" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-
+To review the options of what HTTP verbs you can use against a resource, use the _options_ command
+	
+	$ osvc-rest options "opportunities" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 ## Required Flags:
 
 	  Basic Authentication
@@ -77,5 +74,6 @@ In order to delete a resource, you must use the _delete_ command to delete the r
 	  -s, --suppress-rules     Adds a header to suppress business rules
 	  -t, --utcTime            Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)
 	      --debug              Prints request headers for debugging
+	      --schema             Sets 'Accept' header to 'application/schema+json'
 	
 	Use "osvc-rest [command] --help" for more information about a command.

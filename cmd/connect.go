@@ -41,6 +41,10 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 	    req.Header.Add("OSvC-CREST-Time-UTC", "yes")
     }
 
+    if accept == true{
+        req.Header.Add("Accept", "application/schema+json")
+    }
+
     if debug == true{
         requestDump, err := httputil.DumpRequest(req, true)
         if err != nil {
@@ -71,7 +75,18 @@ func connect(requestType string,requestUrl string, jsonData io.Reader) []byte{
         os.Exit(0)
     }
 
-    bodyBytes, err := ioutil.ReadAll(rs.Body)
+    var bodyBytes []byte
+
+    if requestType == "OPTIONS" {
+        responseDump, err := httputil.DumpResponse(rs, true)
+        if err != nil {
+          fmt.Println(err)
+        }
+        bodyBytes = responseDump
+    }else{
+        bodyBytes, err = ioutil.ReadAll(rs.Body)
+    }
+
     
     if err != nil {
         panic(err)

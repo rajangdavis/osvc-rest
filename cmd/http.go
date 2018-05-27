@@ -59,7 +59,9 @@ func makeRequest(verb string, url string, optionalJson io.Reader, ch chan <-[]by
 	if !ok && strings.Index(url,"?download") != -1{
 		fileName := downloadFileData(url)
 		createFile(fileName,byteData)
-	}else if !ok{
+	}else if !ok && verb == "OPTIONS" {
+        jsonData = byteData
+    }else if !ok{
         fmt.Println("Error")
     }else{
 		formattedJson, _ := json.MarshalIndent(m,"","  ")
@@ -138,11 +140,19 @@ var delete = &cobra.Command{
 	RunE: runHttp,
 }
 
+var options = &cobra.Command{
+	Use: "options",
+	Short: "Performs a options request",
+	Long: "\033[93mPerforms a OPTIONS request; if successful, HEADERS are returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest options \"opportunities\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
+	RunE: runHttp,
+}
+
 func init(){
 	RootCmd.AddCommand(get)
 	post.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
-	patch.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
+	patch.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the PATCH request")
 	RootCmd.AddCommand(post)
 	RootCmd.AddCommand(patch)
 	RootCmd.AddCommand(delete)
+	RootCmd.AddCommand(options)
 }
