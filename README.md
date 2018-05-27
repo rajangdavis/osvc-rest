@@ -9,13 +9,17 @@ The basic formula for this CLI is the following:
 The commands come in the following flavors:
 
 1. [HTTP Methods](#http-methods)
+	1. For creating objects, use the [post command](#post)
+	2. For fetching objects and downloading file attachments, use the [get command](#get)
+	3.
+	4.
+	5.
 2. [Running one or more ROQL queries](running-one-or-more-roql-queries)
 3. [Running reports](running-reports)
 
+Here are the spicier commands:
+3. [Running multiple reports](running-reports)
 
-## TODO 
-1. Session Authorization
-2. OAuth Authorization
 
 ## Authentication:
 Use the following flags to authenticate
@@ -25,33 +29,43 @@ Use the following flags to authenticate
 	  -p, --password (string)  Password to use for basic authentication
 	  -i, --interface (string) Oracle Service Cloud Interface to connect with
 
-	  Session Authentication
-	  -s, --session-auth
+<!-- ## TODO 
+1. Session Authorization
+2. OAuth Authorization
+ Session Authentication
+-s, --session-auth
 
-	  OAuth Authentication
-	  -o, --oauth
+OAuth Authentication
+-o, --oauth -->
 
 ## HTTP Methods
 All the of HTTP Methods have the following formula:
 	
-	$ osvc-rest <http-verb> <resource-url> (optional flags for POST and PATCH requests: --data , --attach-file) <authentication-method>
+	$ osvc-rest <http-verb> <resource-url> (optional flags) <authentication-method>
 
+
+### POST
 In order to create a resource, you must use the _post_ command to send JSON data to the resource of your choice
 
 	$ osvc-rest post "opportunities" --data '{"name":"TEST"}' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
+
+### GET
 In order to fetch a resource, you must use the _get_ command to request JSON data from the resource of your choice
 	
 	$ osvc-rest get "opportunities/?q=name like 'TEST'" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 	
+### PATCH	
 In order to update a resource, you must use the _patch_ command to send JSON data to update the resource of your choice
 
 	$ osvc-rest patch "opportunities/5" --data '{"name":"updated NAME for TEST"}'  -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
+### DELETE
 In order to delete a resource, you must use the _delete_ command to delete the resource of your choice
 	
 	$ osvc-rest delete "opportunities/5" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
+### OPTIONS
 To review the options of what HTTP verbs you can use against a resource, use the _options_ command
 	
 	$ osvc-rest options "opportunities" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
