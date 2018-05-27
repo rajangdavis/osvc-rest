@@ -8,8 +8,9 @@ import(
 )
 
 var (
-	userName, password, interfaceName, version, annotation string
-	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, accept bool
+	userName, password, interfaceName, version, annotation, accessToken string
+	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, schema bool
+	nextRequest int
 )
 
 func checkAnnotation() error{

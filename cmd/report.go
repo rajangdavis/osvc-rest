@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"bytes"
-	"strings"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -35,11 +34,11 @@ func runReport(cmd *cobra.Command, args []string) error {
 	
 
 	if reportLimit > 0 {
-		str = strings.Replace(str, "}", fmt.Sprintf(`, "limit" : %d}`,reportLimit), 1)
+		str = str[:len(str) - 1] + fmt.Sprintf(`, "limit" : %d}`,reportLimit)
 	}
 
 	if filters != ""{
-		str = strings.Replace(str, "}", fmt.Sprintf(`, "filters" : %s}`, filters), 1)
+		str = str[:len(str) - 1] + fmt.Sprintf(`, "filters" : %s}`, filters)
 	}
 
 	identifier = []byte(str)

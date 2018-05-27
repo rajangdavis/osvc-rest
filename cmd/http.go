@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/tidwall/gjson"
-	"github.com/buger/jsonparser"
 	"encoding/json"
 )
 
@@ -25,30 +24,6 @@ func httpCheck(args []string) []string {
 		}
 	}
 	return resourceUrls
-}
-
-func createFile(filepath string, body []byte) error{
-	out, err := os.Create(filepath)
-    if err != nil {
-        return err
-    }
-    defer out.Close()
-
-	_, err = io.Copy(out, bytes.NewReader(body))
-	if err != nil {
-        return err
-    }
-    return nil
-}
-
-func downloadFileData(url string) string{
-	newUrl :=  strings.Replace(url,"?download","",1)
-	downloadData := connect("GET",newUrl,nil)
-	fileName, err := jsonparser.GetString(downloadData,"fileName")
-	if err != nil{
-		fmt.Println(err)
-	}
-	return fileName
 }
 
 func makeRequest(verb string, url string, optionalJson io.Reader, ch chan <-[]byte) {
@@ -80,6 +55,29 @@ func runHttp(cmd *cobra.Command, args []string) error {
 
 	ch := make(chan []byte)
 
+	if len(fileAttachmentsLocation) > 0 {
+		
+		if data == ""{
+			data = `{"fileAttachments" : [ `
+		}else{
+			data = data[:len(data) - 1] + `, "fileAttachments" : [ `
+		
+		}
+		
+		for i := 0; i < len(fileAttachmentsLocation); i++ {
+			fileAttachmentData := openFile(fileAttachmentsLocation[i])
+
+			if(i < len(fileAttachmentsLocation) - 1){
+				data = data + fileAttachmentData + ", "			
+			}else{
+				data = data + fileAttachmentData
+			}
+		}
+
+		data = data + `]}`
+
+	}
+
 	jsonData := bytes.NewReader([]byte(data))
 	
 	for i := 0; i < resourceUrlsCount; i++ {
@@ -101,11 +99,36 @@ var get = &cobra.Command{
 	RunE: runHttp,
 }
 
+var delete = &cobra.Command{
+	Use: "delete",
+	Short: "Performs a DELETE request",
+	Long: "\033[93mPerforms a DELETE request; if successful, nothing is returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest delete \"opportunities/1\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
+	RunE: runHttp,
+}
+
+var options = &cobra.Command{
+	Use: "options",
+	Short: "Performs a options request",
+	Long: "\033[93mPerforms a OPTIONS request; if successful, HEADERS are returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest options \"opportunities\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
+	RunE: runHttp,
+}
+
+
+
+
+
+
+
 var data string
+var fileAttachmentsLocation []string
 
 func checkPostPatchFlags(flags *pflag.FlagSet) error {
+	
+	// Don't force people to have to set the data flag if they only want to attach a file
+	// Otherwise if there is no file attachmeng AND no data
+	// Raise a complaint
 
-	if data == "" {
+	if data == "" && len(fileAttachmentsLocation) == 0 {
 		fmt.Println("\033[31mError: Must send JSON Data for POST and PATCH requests; use the --data flag")
 		os.Exit(0)
 	}
@@ -133,24 +156,14 @@ var patch = &cobra.Command{
 	RunE: runHttp,
 }
 
-var delete = &cobra.Command{
-	Use: "delete",
-	Short: "Performs a DELETE request",
-	Long: "\033[93mPerforms a DELETE request; if successful, nothing is returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest delete \"opportunities/1\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
-	RunE: runHttp,
-}
-
-var options = &cobra.Command{
-	Use: "options",
-	Short: "Performs a options request",
-	Long: "\033[93mPerforms a OPTIONS request; if successful, HEADERS are returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest options \"opportunities\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
-	RunE: runHttp,
-}
-
 func init(){
 	RootCmd.AddCommand(get)
 	post.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
 	patch.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the PATCH request")
+	
+	post.Flags().StringArrayVarP(&fileAttachmentsLocation,"attach-file","f", []string{}, "Sets the File location of the file attachment to be included with a POST request")
+	patch.Flags().StringArrayVarP(&fileAttachmentsLocation,"attach-file","f", []string{}, "Sets the File location of the file attachment to be included with a PATCH request")
+
 	RootCmd.AddCommand(post)
 	RootCmd.AddCommand(patch)
 	RootCmd.AddCommand(delete)

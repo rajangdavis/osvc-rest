@@ -4,34 +4,36 @@ An (under development) CLI for using the [Oracle Service Cloud REST API](https:/
 
 ## TODO 
 		
-### add functionality for 
-		
-1. file attachments upload on POST requests
-2. osvc-crest-api-access-token
-3. osvc-crest-next-request-after
-4. Session Authorization
-5. OAuth Authorization
+### add functionality for
+
+1. osvc-crest-next-request-after
+
+2. Session Authorization
+3. OAuth Authorization
+
+### Update Readme documentation
+1. Match Oracle's Docs
 
 ## Available Commands:
 
-### Running one or more ROQL queries
-Runs one or more ROQL queries and returns parsed results
-	
-	Single Query Example:
-	$ osvc-rest query "DESCRIBE" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
-	
-	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
-	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+## Authentication:
+Use the following flags to authenticate
 
-### Running Reports
-Runs an analytics report and returns parsed results
+	  Basic Authentication
+	  -u, --username (string)  Username to use for basic authentication
+	  -p, --password (string)  Password to use for basic authentication
+	  -i, --interface (string) Oracle Service Cloud Interface to connect with
 
-	Report (without filters) Example:
-	$ osvc-rest report --id 176 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	  Session Authentication
+	  -s, --session-auth
 
-	Report (with filters and limiting) Example:
-	$ osvc-rest report --id 176 --limit 10 --filters '[{"name":"search_ex","values":"returns"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	  OAuth Authentication
+	  -o, --oauth
+
 ### HTTP Methods
+All the of HTTP Methods have the following formula:
+	
+	$ osvc-rest <http-verb> <resource-url> (optional flags for POST and PATCH requests: --data , --attach-file) <authentication-method>
 
 In order to create a resource, you must use the _post_ command to send JSON data to the resource of your choice
 
@@ -52,26 +54,60 @@ In order to delete a resource, you must use the _delete_ command to delete the r
 To review the options of what HTTP verbs you can use against a resource, use the _options_ command
 	
 	$ osvc-rest options "opportunities" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
-## Required Flags:
 
-	  Basic Authentication
-	  -u, --username (string)  Username to use for basic authentication
-	  -p, --password (string)  Password to use for basic authentication
-	  -i, --interface (string) Oracle Service Cloud Interface to connect with
+### Uploading File Attachments
 
-	  Session Authentication
-	  -s, --session-auth
+In order to upload a file attachment, use the --attach-file (or -f) flag to attach a file with the file location
 
-	  OAuth Authentication
-	  -o, --oauth
+	$ osvc-rest post "opportunities" --data '{"name":"TEST"}' --attach-file "./proof_of_purchase.jpg" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+To attach multiple files, use the --attach-file (or -f) flag for each file you wish to attach
+
+	$ osvc-rest patch "incidents/302" -f "front_angle.png" -f "back_angle.png" -f "side_angle.png" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+### Downloading File Attachments
+
+In order to download a file attachment from a given resource, [add "?download" to the file attachment URL](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_managing_file_attachments.html#ManagingFileAttachments-07BABEF6__concept-406-3A92801C). The file will be downloaded in the same directory that the command is run in.
+
+	$ osvc-rest get "incidents/24898/fileAttachments/253?download" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+To download all files from a given resource, add ["?download" to the file Attachments URL](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_managing_file_attachments.html#ManagingFileAttachments-07BABEF6__concept-410-3A92801F)
+
+	$ osvc-rest get "incidents/24898/fileAttachments?download" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE --demosite
+
+	$ osvc-rest get "incidents/24898/fileAttachments?download" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+### Running one or more ROQL queries
+Runs one or more ROQL queries and returns parsed results
+	
+	Single Query Example:
+	$ osvc-rest query "DESCRIBE" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	
+	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
+	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+### Running Reports
+Runs an analytics report and returns parsed results
+
+	Report (without filters) Example:
+	$ osvc-rest report --id 176 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+	Report (with filters and limiting) Example:
+	$ osvc-rest report --id 176 --limit 10 --filters '[{"name":"search_ex","values":"returns"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+### Bulk Delete
+This CLI provides a very simple interface to use the Bulk Delete feature within the latest versions of the REST API. Before you can use this feature, make sure that you have the [correct permissions set up for your profile](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_bulk_delete.html#BulkDelete-10689704__concept-212-37785F91).
+
+	Bulk Delete Example: 
+	$ osvc-rest query "DELETE from incidents limit 1000" "DELETE from incidents limit 1000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE --demosite -v latest -a "Testing bulk delete multiple requests"
 
 ## Optional Flags:
 	      --demosite           Change the domain from 'custhelp' to 'rightnowdemo'
 	  -v, --version (string)   Changes the CCOM version (default "v1.3")
 	  -a, --annotate (string)  Adds a custom header that adds an annotation (CCOM version must be set to "v1.4" or "latest"); limited to 40 characters
 	      --no-ssl-verify      Turns off SSL verification
-	  -e, --exclude-null       Adds a custom header to excludes null from results
-	  -s, --suppress-rules     Adds a header to suppress business rules
+	  -e, --exclude-null       Adds a custom header to excludes null from results (this is for GET requests only, not for queryResults and analyticsReportResults)
+	  -s, --suppress-rules     Adds a header to suppress business rules and external events
 	  -t, --utcTime            Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)
 	      --debug              Prints request headers for debugging
 	      --schema             Sets 'Accept' header to 'application/schema+json'

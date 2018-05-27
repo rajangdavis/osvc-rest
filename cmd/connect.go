@@ -41,8 +41,12 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 	    req.Header.Add("OSvC-CREST-Time-UTC", "yes")
     }
 
-    if accept == true{
+    if schema == true{
         req.Header.Add("Accept", "application/schema+json")
+    }
+
+    if accessToken != ""{
+        req.Header.Add("osvc-crest-api-access-token", accessToken)
     }
 
     if debug == true{
