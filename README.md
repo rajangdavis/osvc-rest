@@ -20,7 +20,7 @@ The basic commands come in the following flavors:
 
 Here are the _spicier_ (more advanced) commands:
 
-1. [Bulk Delete commands](#bulk-delete)
+1. [Bulk Delete](#bulk-delete)
 2. [Running multiple ROQL Queries in parallel](#running-multiple-roql-queries-in-parallel)
 
 
@@ -118,7 +118,8 @@ Runs an analytics report and returns parsed results
 ## Bulk Delete
 This CLI provides a very simple interface to use the Bulk Delete feature within the latest versions of the REST API. Before you can use this feature, make sure that you have the [correct permissions set up for your profile](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_bulk_delete.html#BulkDelete-10689704__concept-212-37785F91).
 
-	Bulk Delete Example: 
+Here is an example of the how to use the Bulk Delete feature: 
+
 	$ osvc-rest query "DELETE from incidents limit 1000" "DELETE from incidents limit 1000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE --demosite -v latest -a "Testing bulk delete multiple requests"
 
 ## Running multiple ROQL Queries in parallel
