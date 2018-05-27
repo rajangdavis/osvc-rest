@@ -5,7 +5,6 @@ import (
 	"os"
 	"encoding/json"
 	"net/url"
-	"github.com/spf13/cobra"
 )
 
 func pqueryCheck(args []string) []string {
@@ -39,7 +38,7 @@ func runParallelQueries(urls []string) <- chan [][]map[string]interface{}{
 	return ch
 } 
 
-func printParallelQueries(cmd *cobra.Command, args []string) error {
+func printParallelQueries(args []string) error {
 	
 	var queriesToRun = pqueryCheck(args)
 	results := runParallelQueries(queriesToRun)
