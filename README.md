@@ -9,16 +9,16 @@ The basic formula for this CLI is the following:
 The commands come in the following flavors:
 
 1. [HTTP Methods](#http-methods)
-	1. For creating objects, use the [post command](#post)
-	2. For fetching objects and downloading file attachments, use the [get command](#get)
-	3.
-	4.
-	5.
-2. [Running one or more ROQL queries](running-one-or-more-roql-queries)
-3. [Running reports](running-reports)
+	1. For creating objects, use the [**post** command](#post)
+	2. For fetching objects and downloading file attachments, use the [**get** command](#get)
+	3. For updating objects use the [**patch** command](#patch)
+	4. For deleting objects use the [**delete** command](#delete)
+	5. For looking up options, use the [**options** command](#options)
+2. [Running one or more ROQL queries](#running-one-or-more-roql-queries)
+3. [Running reports](#running-reports)
 
-Here are the spicier commands:
-3. [Running multiple reports](running-reports)
+<!-- Here are the spicier commands:
+3. [Running multiple reports](running-reports) -->
 
 
 ## Authentication:
