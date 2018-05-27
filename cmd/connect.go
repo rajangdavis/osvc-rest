@@ -8,6 +8,7 @@ import (
     "io"
 	"io/ioutil"
     "strings"
+    "strconv"
 )
 
 func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string){
@@ -47,6 +48,10 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 
     if accessToken != ""{
         req.Header.Add("osvc-crest-api-access-token", accessToken)
+    }
+
+    if nextRequest > 0 {
+        req.Header.Add("osvc-crest-next-request-after", strconv.Itoa(nextRequest))
     }
 
     if debug == true{

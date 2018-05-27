@@ -5,14 +5,8 @@ An (under development) CLI for using the [Oracle Service Cloud REST API](https:/
 ## TODO 
 		
 ### add functionality for
-
-1. osvc-crest-next-request-after
-
-2. Session Authorization
-3. OAuth Authorization
-
-### Update Readme documentation
-1. Match Oracle's Docs
+1. Session Authorization
+2. OAuth Authorization
 
 ## Available Commands:
 
@@ -71,11 +65,13 @@ In order to download a file attachment from a given resource, [add "?download" t
 
 	$ osvc-rest get "incidents/24898/fileAttachments/253?download" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-To download all files from a given resource, add ["?download" to the file Attachments URL](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_managing_file_attachments.html#ManagingFileAttachments-07BABEF6__concept-410-3A92801F)
-
-	$ osvc-rest get "incidents/24898/fileAttachments?download" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE --demosite
+To download all file attachmentss from a given resource, add ["?download" to the file Attachments URL](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_managing_file_attachments.html#ManagingFileAttachments-07BABEF6__concept-410-3A92801F). A file called "downloadedAttachment.tgz" will be downloaded to your computer. 
 
 	$ osvc-rest get "incidents/24898/fileAttachments?download" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+You can extract the file using [tar](https://askubuntu.com/questions/499807/how-to-unzip-tgz-file-using-the-terminal/499809#499809)
+    
+    $ tar -xvzf ./downloadedAttachment.tgz
 
 ### Running one or more ROQL queries
 Runs one or more ROQL queries and returns parsed results
@@ -102,14 +98,17 @@ This CLI provides a very simple interface to use the Bulk Delete feature within 
 	$ osvc-rest query "DELETE from incidents limit 1000" "DELETE from incidents limit 1000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE --demosite -v latest -a "Testing bulk delete multiple requests"
 
 ## Optional Flags:
-	      --demosite           Change the domain from 'custhelp' to 'rightnowdemo'
-	  -v, --version (string)   Changes the CCOM version (default "v1.3")
-	  -a, --annotate (string)  Adds a custom header that adds an annotation (CCOM version must be set to "v1.4" or "latest"); limited to 40 characters
-	      --no-ssl-verify      Turns off SSL verification
-	  -e, --exclude-null       Adds a custom header to excludes null from results (this is for GET requests only, not for queryResults and analyticsReportResults)
-	  -s, --suppress-rules     Adds a header to suppress business rules and external events
-	  -t, --utcTime            Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)
-	      --debug              Prints request headers for debugging
-	      --schema             Sets 'Accept' header to 'application/schema+json'
+	    --access-token (string) 	Adds an access token to ensure quality of service
+	-a, --annotate (string)     	Adds a custom header that adds an annotation (CCOM version must be set to "v1.4" or "latest"); limited to 40 characters
+	    --debug                 	Prints request headers for debugging
+	    --demosite              	Change the domain from 'custhelp' to 'rightnowdemo'
+	-e, --exclude-null          	Adds a custom header to excludes null from results
+	-h, --help                  	help for osvc-rest
+	    --next-request (int)      	Number of milliseconds before another HTTP request can be made; this is an anti-DDoS measure
+	    --no-ssl-verify         	Turns off SSL verification
+	    --schema                	Sets 'Accept' header to 'application/schema+json'
+	    --suppress-rules        	Adds a header to suppress business rules
+	-t, --utc-time              	Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)
+	-v, --version (string)      	Changes the CCOM version (default "v1.3")
 	
 	Use "osvc-rest [command] --help" for more information about a command.
