@@ -1,6 +1,8 @@
 # osvc-rest
 
-A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/) written in [golang](https://golang.org).
+A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/).
+
+osvc-rest is written in [golang](https://golang.org).
 
 The basic formula for this CLI is the following:
 	
