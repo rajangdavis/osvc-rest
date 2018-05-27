@@ -3,12 +3,8 @@
 An (under development) CLI for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/) written in Go.
 
 ## TODO 
-		
-### add functionality for
 1. Session Authorization
 2. OAuth Authorization
-
-## Available Commands:
 
 ## Authentication:
 Use the following flags to authenticate
@@ -24,7 +20,7 @@ Use the following flags to authenticate
 	  OAuth Authentication
 	  -o, --oauth
 
-### HTTP Methods
+## HTTP Methods
 All the of HTTP Methods have the following formula:
 	
 	$ osvc-rest <http-verb> <resource-url> (optional flags for POST and PATCH requests: --data , --attach-file) <authentication-method>
@@ -49,7 +45,7 @@ To review the options of what HTTP verbs you can use against a resource, use the
 	
 	$ osvc-rest options "opportunities" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-### Uploading File Attachments
+## Uploading File Attachments
 
 In order to upload a file attachment, use the --attach-file (or -f) flag to attach a file with the file location
 
@@ -59,7 +55,7 @@ To attach multiple files, use the --attach-file (or -f) flag for each file you w
 
 	$ osvc-rest patch "incidents/302" -f "front_angle.png" -f "back_angle.png" -f "side_angle.png" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-### Downloading File Attachments
+## Downloading File Attachments
 
 In order to download a file attachment from a given resource, [add "?download" to the file attachment URL](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_managing_file_attachments.html#ManagingFileAttachments-07BABEF6__concept-406-3A92801C). The file will be downloaded in the same directory that the command is run in.
 
@@ -73,7 +69,7 @@ You can extract the file using [tar](https://askubuntu.com/questions/499807/how-
     
     $ tar -xvzf ./downloadedAttachment.tgz
 
-### Running one or more ROQL queries
+## Running one or more ROQL queries
 Runs one or more ROQL queries and returns parsed results
 	
 	Single Query Example:
@@ -82,7 +78,7 @@ Runs one or more ROQL queries and returns parsed results
 	Multiple Queries Example: (Queries should be wrapped in quotes and space separated)
 	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-### Running Reports
+## Running Reports
 Runs an analytics report and returns parsed results
 
 	Report (without filters) Example:
@@ -91,7 +87,7 @@ Runs an analytics report and returns parsed results
 	Report (with filters and limiting) Example:
 	$ osvc-rest report --id 176 --limit 10 --filters '[{"name":"search_ex","values":"returns"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
-### Bulk Delete
+## Bulk Delete
 This CLI provides a very simple interface to use the Bulk Delete feature within the latest versions of the REST API. Before you can use this feature, make sure that you have the [correct permissions set up for your profile](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_bulk_delete.html#BulkDelete-10689704__concept-212-37785F91).
 
 	Bulk Delete Example: 
