@@ -9,9 +9,9 @@ The basic formula for this CLI is the following:
 The basic commands come in the following flavors:
 
 1. [HTTP Methods](#http-methods)
-	1. For creating objects, use the [**post** command](#post)
-	2. For fetching objects and downloading file attachments, use the [**get** command](#get)
-	3. For updating objects use the [**patch** command](#patch)
+	1. For creating objects and [uploading file attachments](#uploading-file-attachments), use the [**post** command](#post)
+	2. For fetching objects and [downloading file attachments](#downloading-file-attachments), use the [**get** command](#get)
+	3. For updating objects and [uploading file attachments to already existing objects](#uploading-file-attachments) use the [**patch** command](#patch)
 	4. For deleting objects use the [**delete** command](#delete)
 	5. For looking up options, use the [**options** command](#options)
 2. [Running one or more ROQL queries](#running-one-or-more-roql-queries)
