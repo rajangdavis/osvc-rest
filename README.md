@@ -1,6 +1,17 @@
 # osvc-rest
 
-An (under development) CLI for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/) written in Go.
+A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/) written in [golang](https://golang.org).
+
+The basic formula for this CLI is the following:
+	
+	$ osvc-rest <command to run> <something the command needs> <optional flags to change various settings> <some way to authenticate>
+
+The commands come in the following flavors:
+
+1. [HTTP Methods](#http-methods)
+2. [Running one or more ROQL queries](running-one-or-more-roql-queries)
+3. [Running reports](running-reports)
+
 
 ## TODO 
 1. Session Authorization
