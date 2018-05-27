@@ -20,8 +20,8 @@ The basic commands come in the following flavors:
 
 Here are the _spicier_ (more advanced) commands:
 
-1. [Bulk Delete commands](bulk-delete)
-2. [Running multiple ROQL Queries in parallel](running-multiple-roql-queries-in-parallel)
+1. [Bulk Delete commands](#bulk-delete)
+2. [Running multiple ROQL Queries in parallel](#running-multiple-roql-queries-in-parallel)
 
 
 ## Authentication:
