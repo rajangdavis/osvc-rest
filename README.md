@@ -1,6 +1,6 @@
 # osvc-rest
 
-A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/).
+A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/toc.htm).
 
 The basic formula for this CLI is the following:
 	
