@@ -1,4 +1,6 @@
 # osvc-rest
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frajangdavis%2Fosvc-rest.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Frajangdavis%2Fosvc-rest?ref=badge_shield)
+
 
 A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/toc.htm).
 
@@ -145,3 +147,6 @@ Instead of running multiple queries in with 1 GET request, you can run multiple 
 
 ## Underlying Tech
 osvc-rest is written in [golang](https://golang.org).
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frajangdavis%2Fosvc-rest.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Frajangdavis%2Fosvc-rest?ref=badge_large)
