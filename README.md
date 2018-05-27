@@ -6,7 +6,7 @@ The basic formula for this CLI is the following:
 	
 	$ osvc-rest <command to run> <something the command needs> <optional flags to change various settings> <some way to authenticate>
 
-The commands come in the following flavors:
+The basic commands come in the following flavors:
 
 1. [HTTP Methods](#http-methods)
 	1. For creating objects, use the [**post** command](#post)
@@ -17,8 +17,10 @@ The commands come in the following flavors:
 2. [Running one or more ROQL queries](#running-one-or-more-roql-queries)
 3. [Running reports](#running-reports)
 
-<!-- Here are the spicier commands:
-3. [Running multiple reports](running-reports) -->
+
+Here are the spicier more advanced commands:
+
+1. [Running multiple ROQL Queries in parallel](running-multiple-roql-queries-in-parallel)
 
 
 ## Authentication:
@@ -124,15 +126,15 @@ This CLI provides a very simple interface to use the Bulk Delete feature within 
 	    --debug                 	Prints request headers for debugging
 	    --demosite              	Change the domain from 'custhelp' to 'rightnowdemo'
 	-e, --exclude-null          	Adds a custom header to excludes null from results
-	-h, --help                  	help for osvc-rest
 	    --next-request (int)      	Number of milliseconds before another HTTP request can be made; this is an anti-DDoS measure
 	    --no-ssl-verify         	Turns off SSL verification
 	    --schema                	Sets 'Accept' header to 'application/schema+json'
 	    --suppress-rules        	Adds a header to suppress business rules
 	-t, --utc-time              	Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)
 	-v, --version (string)      	Changes the CCOM version (default "v1.3")
-	
+
+## Help
 	Use "osvc-rest [command] --help" for more information about a command.
 
-
+## Underlying Tech
 osvc-rest is written in [golang](https://golang.org).

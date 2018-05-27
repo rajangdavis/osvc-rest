@@ -13,7 +13,7 @@ func queryCheck(args []string) string {
 	queryInit := []string{}
 	queryFinal := ""
 	if len(args) == 0{
-		fmt.Println("Error: Must set at least one query")
+		fmt.Println("\033[31mError: Must set at least one query")
 		os.Exit(0)
 	}else if len(args) == 1{
 		queryFinal = url.PathEscape(args[0])
@@ -51,6 +51,14 @@ var query = &cobra.Command{
 	RunE: runQuery,
 }
 
+var pquery = &cobra.Command{
+	Use: "pquery",
+	Short: "Runs multiple ROQL queries in parallel",
+	Long: "\033[93mRuns one or more ROQL queries in parallel and returns parsed results\033[0m \033[0;32m\n\nExample:\033[0m \n$ osvc-rest query \"SELECT * FROM INCIDENTS LIMIT 100\" \"SELECT * FROM SERVICEPRODUCTS LIMIT 100\" \"SELECT * FROM SERVICECATEGORIES LIMIT 100\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
+	RunE: printParallelQueries,
+}
+
 func init(){
 	RootCmd.AddCommand(query)
+	RootCmd.AddCommand(pquery)
 }

@@ -13,7 +13,7 @@ import (
 // 	queryInit := []string{}
 // 	queryFinal := ""
 // 	if len(args) == 0{
-// 		fmt.Println("Error: Must set at least one query")
+// 		fmt.Println("\033[31mError: Must set at least one query")
 // 		os.Exit(0)
 // 	}else if len(args) == 1{
 // 		queryFinal = url.PathEscape(args[0])

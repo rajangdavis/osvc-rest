@@ -5,10 +5,15 @@ import (
 	"os"
 	"encoding/json"
 	"net/url"
+	"github.com/spf13/cobra"
 )
 
 func pqueryCheck(args []string) []string {
 	queriesArray := []string{}
+	if len(args) < 2 {
+		fmt.Println("\033[31mError: Must set at least two queries")
+		os.Exit(0)
+	}
 	for i := 0; i < len(args); i++ {
 		queriesArray = append(queriesArray,args[i])
 	}
@@ -34,7 +39,7 @@ func runParallelQueries(urls []string) <- chan [][]map[string]interface{}{
 	return ch
 } 
 
-func printParallelQueries(args []string) error {
+func printParallelQueries(cmd *cobra.Command, args []string) error {
 	
 	var queriesToRun = pqueryCheck(args)
 	results := runParallelQueries(queriesToRun)

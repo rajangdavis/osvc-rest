@@ -15,7 +15,7 @@ import (
 func httpCheck(args []string) []string {
 	resourceUrls := []string{}
 	if len(args) == 0{
-		fmt.Println("Error: Must set at least one resource url")
+		fmt.Println("\033[31mError: Must set at least one resource url")
 		os.Exit(0)
 	}else{
 		for i := 0; i < len(args); i++ {
@@ -108,7 +108,7 @@ var delete = &cobra.Command{
 
 var options = &cobra.Command{
 	Use: "options",
-	Short: "Performs a options request",
+	Short: "Performs a OPTIONS request",
 	Long: "\033[93mPerforms a OPTIONS request; if successful, HEADERS are returned \033[0m \033[0;32m\n\nExample: \033[0m \n$ osvc-rest options \"opportunities\" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE\n\n",
 	RunE: runHttp,
 }
