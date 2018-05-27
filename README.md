@@ -2,8 +2,6 @@
 
 A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/cloud/latest/servicecs_gs/CXSVC/).
 
-osvc-rest is written in [golang](https://golang.org).
-
 The basic formula for this CLI is the following:
 	
 	$ osvc-rest <command to run> <something the command needs> <optional flags to change various settings> <some way to authenticate>
@@ -121,3 +119,6 @@ This CLI provides a very simple interface to use the Bulk Delete feature within 
 	-v, --version (string)      	Changes the CCOM version (default "v1.3")
 	
 	Use "osvc-rest [command] --help" for more information about a command.
+
+
+osvc-rest is written in [golang](https://golang.org).
