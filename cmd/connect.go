@@ -4,14 +4,15 @@ import (
     "fmt"
 	"os"
 	"net/http"
+    "net/http/httputil"
     "io"
 	"io/ioutil"
     "strings"
 )
 
 func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string){
-	var url = "https://"+ interfaceName +"." + setDomain() +".com/services/rest/connect/" + version + "/"
-	var finalUrl = url + strings.Replace(requestUrl," ","%20",-1)
+	var baseUrl = "https://"+ interfaceName +"." + setDomain() +".com/services/rest/connect/" + version + "/"
+	var finalUrl = baseUrl + strings.Replace(requestUrl," ","%20",-1)
 
     var req *http.Request
     var err error
@@ -32,10 +33,23 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 	    req.Header.Add("OSvC-CREST-Application-Context", annotation)	
     }
 
-    if utcTime == true{
-	    req.Header.Add("OSvC-CREST-Time-UTC", "true")
+    if excludeNull == true{
+        req.Header.Add("prefer", "exclude-null-properties")    
     }
-    return req, err, url
+    
+    if utcTime == true{
+	    req.Header.Add("OSvC-CREST-Time-UTC", "yes")
+    }
+
+    if debug == true{
+        requestDump, err := httputil.DumpRequest(req, true)
+        if err != nil {
+          fmt.Println(err)
+        }
+        fmt.Println(string(requestDump))
+    }
+
+    return req, err, baseUrl
 }
 
 func connect(requestType string,requestUrl string, jsonData io.Reader) []byte{

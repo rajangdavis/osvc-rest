@@ -62,10 +62,12 @@ func init() {
     RootCmd.MarkPersistentFlagRequired("interface")
     
     RootCmd.PersistentFlags().BoolVarP(&demoSite,"demosite","",false, "Change the domain from 'custhelp' to 'rightnowdemo'")
-    RootCmd.PersistentFlags().BoolVarP(&suppressRules,"suppress-rules","s",false, "Adds a header to suppress business rules")
+    RootCmd.PersistentFlags().BoolVarP(&suppressRules,"suppress-rules","",false, "Adds a header to suppress business rules")
     RootCmd.PersistentFlags().BoolVarP(&noSslVerify,"no-ssl-verify","",false, "Turns off SSL verification")
     RootCmd.PersistentFlags().StringVarP(&version,"version","v","v1.3", "Changes the CCOM version")
-    RootCmd.PersistentFlags().StringVarP(&annotation,"annotate","a","", "Adds a custom header that adds an annotation")
+    RootCmd.PersistentFlags().StringVarP(&annotation,"annotate","a","", "Adds a custom header that adds an annotation (CCOM version must be set to \"v1.4\" or \"latest\"); limited to 40 characters")
     RootCmd.PersistentFlags().BoolVarP(&excludeNull,"exclude-null","e",false, "Adds a custom header to excludes null from results")
-    RootCmd.PersistentFlags().BoolVarP(&utcTime,"utcTime","t",false, "Adds a custom header to return results using Coordinated Universal Time (UTC) format for time")
+    RootCmd.PersistentFlags().BoolVarP(&utcTime,"utcTime","t",false, "Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)")
+ 
+    RootCmd.PersistentFlags().BoolVarP(&debug,"debug","",false, "Prints request headers for debugging")
 }

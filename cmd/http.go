@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/tidwall/gjson"
+	"github.com/buger/jsonparser"
 	"encoding/json"
 )
 
@@ -26,16 +27,47 @@ func httpCheck(args []string) []string {
 	return resourceUrls
 }
 
+func createFile(filepath string, body []byte) error{
+	out, err := os.Create(filepath)
+    if err != nil {
+        return err
+    }
+    defer out.Close()
+
+	_, err = io.Copy(out, bytes.NewReader(body))
+	if err != nil {
+        return err
+    }
+    return nil
+}
+
+func downloadFileData(url string) string{
+	newUrl :=  strings.Replace(url,"?download","",1)
+	downloadData := connect("GET",newUrl,nil)
+	fileName, err := jsonparser.GetString(downloadData,"fileName")
+	if err != nil{
+		fmt.Println(err)
+	}
+	return fileName
+}
+
 func makeRequest(verb string, url string, optionalJson io.Reader, ch chan <-[]byte) {
 	byteData := connect(verb,url,optionalJson)
 	m, ok := gjson.Parse(string(byteData)).Value().(map[string]interface{})
-	if !ok {
+	jsonData := []byte{}
+
+	if !ok && strings.Index(url,"?download") != -1{
+		fileName := downloadFileData(url)
+		createFile(fileName,byteData)
+	}else if !ok{
         fmt.Println("Error")
+    }else{
+		formattedJson, _ := json.MarshalIndent(m,"","  ")
+		jsonData = formattedJson
     }
 
-	jsonData, _ := json.MarshalIndent(m,"","  ")
-
 	ch <- jsonData
+
 }
 
 func runHttp(cmd *cobra.Command, args []string) error {
@@ -52,6 +84,9 @@ func runHttp(cmd *cobra.Command, args []string) error {
 		go makeRequest(httpVerb,resourceUrls[i], jsonData, ch)
 		
 		fmt.Fprintf(os.Stdout, "%s", <-ch)
+		if httpVerb!="GET"{
+			return nil;
+		}
 	}
 
 	return nil
@@ -64,7 +99,6 @@ var get = &cobra.Command{
 	RunE: runHttp,
 }
 
-// , fileData
 var data string
 
 func checkPostPatchFlags(flags *pflag.FlagSet) error {
@@ -106,7 +140,6 @@ var delete = &cobra.Command{
 
 func init(){
 	RootCmd.AddCommand(get)
-	// post.Flags().StringVarP(&fileData,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
 	post.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
 	patch.Flags().StringVarP(&data,"data","j","", "Sets the JSON data to be sent for the POST request")
 	RootCmd.AddCommand(post)

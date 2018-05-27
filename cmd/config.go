@@ -9,7 +9,7 @@ import(
 
 var (
 	userName, password, interfaceName, version, annotation string
-	noSslVerify, suppressRules, demoSite, excludeNull, utcTime bool
+	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug bool
 )
 
 func checkAnnotation() error{

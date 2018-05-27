@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"os"
 	"bytes"
+	"strings"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
 
 var lookupName, filters string
-var id int
+var id, reportLimit int
 
 func checkReportFlags(flags *pflag.FlagSet) error {
 
@@ -24,15 +25,27 @@ func checkReportFlags(flags *pflag.FlagSet) error {
 func runReport(cmd *cobra.Command, args []string) error {
 
 	var identifier  []byte
+	var str string
 
 	if lookupName =="" { 
-		str := fmt.Sprintf(`{"id":%d}`, id)
-		identifier = []byte(str)
+		str = fmt.Sprintf(`{"id":%d}`, id)
 	}else{ 
-		str := fmt.Sprintf(`{"lookupName":%q}`, lookupName)
-		identifier = []byte(str)
+		str = fmt.Sprintf(`{"lookupName":%q}`, lookupName)
 	}
+	
+
+	if reportLimit > 0 {
+		str = strings.Replace(str, "}", fmt.Sprintf(`, "limit" : %d}`,reportLimit), 1)
+	}
+
+	if filters != ""{
+		str = strings.Replace(str, "}", fmt.Sprintf(`, "filters" : %s}`, filters), 1)
+	}
+
+	identifier = []byte(str)
+
 	jsonData := bytes.NewBuffer(identifier)
+
 	reportUrl := "analyticsReportResults"
 	bodyBytes := connect("POST",reportUrl,jsonData)
 	normalizeReport(bodyBytes)
@@ -42,8 +55,8 @@ func runReport(cmd *cobra.Command, args []string) error {
 // report represents the report command
 var report = &cobra.Command{
 	Use:   "report",
-	Short: "Runs an analytics report command",
-	Long: "\033[93mRuns an analytics report and returns parsed results\033[0m \033[0;32m\n\nReport (without filters) Example: \033[0m \n$ osvc-rest report --id 186 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
+	Short: "Runs an analytics report command", 
+	Long: "\033[93mRuns an analytics report and returns parsed results\033[0m \033[0;32m\n\nReport (without filters) Example: \033[0m \n$ osvc-rest report --id 176 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE \033[0;32m\n\nReport (with filters and limiting) Example: \033[0m \n$ osvc-rest report --id 176 --limit 10 --filters '[{\"name\":\"search_ex\",\"values\":\"returns\"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE",
 	PreRunE:func(cmd *cobra.Command, args []string) error {		
 		return checkReportFlags(cmd.Flags())
 	},
@@ -53,6 +66,7 @@ var report = &cobra.Command{
 func init() {
 	report.Flags().StringVarP(&filters,"filters","f","", "Adds filters for reporting")
 	report.Flags().StringVarP(&lookupName,"name","n","", "Sets the lookupName of the AnalyticsReport that we wish to run")
+	report.Flags().IntVarP(&reportLimit,"limit","l",0, "Adds limit for reporting")
 	report.Flags().IntVarP(&id, "id", "",0, "Sets the id of the AnalyticsReport that we wish to run")
 	RootCmd.AddCommand(report)
 }
