@@ -12,6 +12,7 @@ import (
 var parallelRequest bool
 
 func queryCheck(args []string) string {
+	interfaceAndPassword()
 	queryInit := []string{}
 	queryFinal := ""
 	if len(args) == 0 {

@@ -13,6 +13,7 @@ import (
 )
 
 func httpCheck(args []string) []string {
+	interfaceAndPassword()
 	resourceUrls := []string{}
 	if len(args) == 0 {
 		fmt.Println("\033[31mError: Must set at least one resource url")

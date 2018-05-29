@@ -8,10 +8,38 @@ import (
 )
 
 var (
-	userName, password, interfaceName, version, annotation, accessToken       string
-	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, schema bool
-	nextRequest                                                               int
+	userName, password, interfaceName, session, oauth, version, annotation, accessToken string
+	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, schema           bool
+	nextRequest                                                                         int
 )
+
+func interfaceAndPassword() error {
+	checkInterface()
+	checkAuthentication()
+	return nil
+}
+
+func checkInterface() error {
+	if interfaceName == "" {
+		fmt.Println("\033[31mError: Must set an interface to connect with.")
+		os.Exit(0)
+	}
+	return nil
+}
+
+func checkAuthentication() error {
+	if userName == "" && password != "" {
+		fmt.Println("\033[31mError: Password is set but user name is not")
+		os.Exit(0)
+	} else if userName != "" && password == "" {
+		fmt.Println("\033[31mError: User name is set but password is not.")
+		os.Exit(0)
+	} else if userName == "" && password == "" && session == "" && oauth == "" {
+		fmt.Println("\033[31mError: Must use some form of authentication.")
+		os.Exit(0)
+	}
+	return nil
+}
 
 func checkAnnotation() error {
 	if annotation != "" && len(annotation) > 40 {

@@ -17,29 +17,75 @@ The basic commands come in the following flavors:
 2. [Running one or more ROQL queries](#running-one-or-more-roql-queries)
 3. [Running reports](#running-reports)
 
-
 Here are the _spicier_ (more advanced) commands:
 
 1. [Bulk Delete](#bulk-delete)
 2. [Running multiple ROQL Queries in parallel](#running-multiple-roql-queries-in-parallel)
-
+3. [Performing Session Authentication](#performing-session-authentication)
 
 ## Authentication:
 Use the following flags to authenticate
 
+	  -i, --interface (string) Oracle Service Cloud Interface to connect with
+	  
 	  Basic Authentication
 	  -u, --username (string)  Username to use for basic authentication
 	  -p, --password (string)  Password to use for basic authentication
-	  -i, --interface (string) Oracle Service Cloud Interface to connect with
 
-<!-- ## TODO 
-1. Session Authorization
-2. OAuth Authorization
- Session Authentication
--s, --session-auth
+	  Session Authentication
+	  -s, --session (string)  Sets the session token for session authentication
 
-OAuth Authentication
--o, --oauth -->
+	  OAuth Authentication (untested but should work)
+	  -o, --oauth (string)  Sets the bearer token for OAuth authentication
+
+## Performing Session Authentication
+
+1. Create a custom script with the following code:
+
+```php
+<?php
+
+// Find our position in the file tree
+if (!defined('DOCROOT')) {
+$docroot = get_cfg_var('doc_root');
+define('DOCROOT', $docroot);
+}
+ 
+/************* Agent Authentication ***************/
+ 
+// Set up and call the AgentAuthenticator
+require_once (DOCROOT . '/include/services/AgentAuthenticator.phph');
+
+// get username and password
+$username = $_GET['username'];
+$password = $_GET['password'];
+ 
+// On failure, this includes the Access Denied page and then exits,
+// preventing the rest of the page from running.
+echo json_encode(AgentAuthenticator::authenticateCredentials($username,$password));
+
+```
+
+2. Run a curl command against the location of the custom script and pass in the account credentials that you would like to create a session with
+
+		curl "https://$OSC_SITE.custhelp.com/cgi-bin/$OSC_CONFIG.cfg/php/custom/login_test.php?username=$OSC_ADMIN&password=$OSC_PASSWORD"
+
+
+3. If successful, a JSON object with the following properties should return:
+
+		{"acct_id":644,"session_id":"ILsRhQkUWW2ef6wOR90yMcy0Isdfsf8b02POI"}
+
+4. To retrieve the "session_id" of the JSON object, we will set the session id to a bash variable and parse the JSON object using [jq, a popular command line tool for manipulating JSON](https://stedolan.github.io/jq/).
+
+		export SESSION_ID=$(curl "https://$OSC_SITE.custhelp.com/cgi-bin/$OSC_CONFIG.cfg/php/custom/login_test.php?username=$OSC_ADMIN&password=$OSC_PASSWORD" | ~/Desktop/jq-win64.exe -r '.session_id') && echo $SESSION_ID
+
+5. If successful, you wil see the "session_id" property by itself:
+
+		ILsRhQkUWW2ef6wOR90yMcy0Isdfsf8b02POI
+
+6. Finally, we will chain the output of the above commands and use it with osvc-rest to generate JSON:
+
+		export SESSION_ID=$(curl "https://$OSC_SITE.custhelp.com/cgi-bin/$OSC_CONFIG.cfg/php/custom/login_test.php?username=$OSC_ADMIN&password=$OSC_PASSWORD" | ~/Desktop/jq-win64.exe -r '.session_id') && osvc-rest get "" -s $SESSION_ID -i $OSC_SITE --demosite
 
 ## HTTP Methods
 All the of HTTP Methods have the following formula:

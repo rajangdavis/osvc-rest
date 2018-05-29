@@ -28,7 +28,13 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 		req, err = http.NewRequest(method, finalUrl, nil)
 	}
 
-	req.Header.Add("Authorization", "Basic "+basicAuth(userName, password))
+	if session != "" {
+		req.Header.Add("Authorization", "Session "+session)
+	} else if oauth != "" {
+		req.Header.Add("Authorization", "Bearer "+oauth)
+	} else {
+		req.Header.Add("Authorization", "Basic "+basicAuth(userName, password))
+	}
 
 	if (version == "v1.4" || version == "latest") && annotation != "" && len(annotation) <= 40 {
 		req.Header.Add("OSvC-CREST-Application-Context", annotation)

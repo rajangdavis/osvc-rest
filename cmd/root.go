@@ -1,45 +1,22 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"os"
 )
-
-func checkRequiredFlags(flags *pflag.FlagSet) error {
-	requiredError := false
-	flagName := ""
-
-	flags.VisitAll(func(flag *pflag.Flag) {
-		requiredAnnotation := flag.Annotations[cobra.BashCompOneRequiredFlag]
-		if len(requiredAnnotation) == 0 {
-			return
-		}
-
-		flagRequired := requiredAnnotation[0] == "true"
-
-		if flagRequired && !flag.Changed {
-			requiredError = true
-			flagName = flag.Name
-		}
-	})
-
-	if requiredError {
-		return errors.New("Required flag `" + flagName + "` has not been set")
-	}
-
-	return nil
-}
 
 var RootCmd = &cobra.Command{
 	Use:   "osvc-rest",
 	Short: "OSvC REST CLI",
-	Long:  `osvc-rest - a Command Line Interface application to work with the Oracle Service Cloud REST API`,
-	PreRunE: func(cmd *cobra.Command, args []string) error {
-		return checkRequiredFlags(cmd.Flags())
-	},
+	Long: `osvc-rest - a Command Line Interface application to work with the Oracle Service Cloud REST API
+
+osvc-rest  Copyright (C) 2018 Rajan G. Davis
+	
+This program comes with ABSOLUTELY NO WARRANTY; for details type 'osvc-rest warranty'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type 'show c' for details.
+osvc-rest - a Command Line Interface application to work with the Oracle Service Cloud REST API`,
 }
 
 func Execute() {
@@ -51,11 +28,10 @@ func Execute() {
 
 func init() {
 	RootCmd.PersistentFlags().StringVarP(&userName, "username", "u", "", "Username to use for basic authentication")
-	RootCmd.MarkPersistentFlagRequired("username")
 	RootCmd.PersistentFlags().StringVarP(&password, "password", "p", "", "Password to use for basic authentication")
-	RootCmd.MarkPersistentFlagRequired("password")
+	RootCmd.PersistentFlags().StringVarP(&session, "session", "s", "", "Sets the session token for session authentication")
+	RootCmd.PersistentFlags().StringVarP(&oauth, "oauth", "o", "", "Sets the OAuth token for OAuth authentication")
 	RootCmd.PersistentFlags().StringVarP(&interfaceName, "interface", "i", "", "Oracle Service Cloud Interface to connect with")
-	RootCmd.MarkPersistentFlagRequired("interface")
 
 	RootCmd.PersistentFlags().BoolVarP(&demoSite, "demosite", "", false, "Change the domain from 'custhelp' to 'rightnowdemo'")
 	RootCmd.PersistentFlags().BoolVarP(&suppressRules, "suppress-rules", "", false, "Adds a header to suppress business rules")
