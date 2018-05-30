@@ -21,7 +21,7 @@ func interfaceAndPassword() error {
 
 func checkInterface() error {
 	if interfaceName == "" {
-		fmt.Println("\033[31mError: Must set an interface to connect with.")
+		fmt.Println("\033[31mError: Must set an interface to connect with. \033[0m ")
 		os.Exit(0)
 	}
 	return nil
@@ -29,13 +29,13 @@ func checkInterface() error {
 
 func checkAuthentication() error {
 	if userName == "" && password != "" {
-		fmt.Println("\033[31mError: Password is set but user name is not")
+		fmt.Println("\033[31mError: Password is set but user name is not \033[0m ")
 		os.Exit(0)
 	} else if userName != "" && password == "" {
-		fmt.Println("\033[31mError: User name is set but password is not.")
+		fmt.Println("\033[31mError: User name is set but password is not. \033[0m ")
 		os.Exit(0)
 	} else if userName == "" && password == "" && session == "" && oauth == "" {
-		fmt.Println("\033[31mError: Must use some form of authentication.")
+		fmt.Println("\033[31mError: Must use some form of authentication. \033[0m ")
 		os.Exit(0)
 	}
 	return nil
@@ -43,10 +43,10 @@ func checkAuthentication() error {
 
 func checkAnnotation() error {
 	if annotation != "" && len(annotation) > 40 {
-		fmt.Println("\033[31mError: Annotation cannot be greater than 40 characters.")
+		fmt.Println("\033[31mError: Annotation cannot be greater than 40 characters. \033[0m ")
 		os.Exit(0)
 	} else if (version == "v1.4" || version == "latest") && annotation == "" {
-		fmt.Println("\033[31mError: An Annotation must be set when using CCOM version 1.4 (e.g. -a \"40 character annotation\")")
+		fmt.Println("\033[31mError: An Annotation must be set when using CCOM version 1.4 (e.g. -a \"40 character annotation\") \033[0m ")
 		os.Exit(0)
 	}
 	return nil

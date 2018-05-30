@@ -81,7 +81,7 @@ func connect(requestType string, requestUrl string, jsonData io.Reader) []byte {
 
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println("\033[31mError: Could not connect to site '" + url + "'")
+		fmt.Println("\033[31mError: Could not connect to site '" + url + "' \033[0m ")
 		os.Exit(1)
 	}
 	defer rs.Body.Close()

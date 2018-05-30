@@ -16,7 +16,7 @@ func httpCheck(args []string) []string {
 	interfaceAndPassword()
 	resourceUrls := []string{}
 	if len(args) == 0 {
-		fmt.Println("\033[31mError: Must set at least one resource url")
+		fmt.Println("\033[31mError: Must set at least one resource url \033[0m ")
 		os.Exit(0)
 	} else {
 		for i := 0; i < len(args); i++ {
@@ -124,7 +124,7 @@ func checkPostPatchFlags(flags *pflag.FlagSet) error {
 	// Raise a complaint
 
 	if data == "" && len(fileAttachmentsLocation) == 0 {
-		fmt.Println("\033[31mError: Must send JSON Data for POST and PATCH requests; use the --data flag")
+		fmt.Println("\033[31mError: Must send JSON Data for POST and PATCH requests; use the --data flag \033[0m")
 		os.Exit(0)
 	}
 

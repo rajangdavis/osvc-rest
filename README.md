@@ -2,6 +2,34 @@
 
 A command line interface for using the [Oracle Service Cloud REST API](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/toc.htm).
 
+## Installation
+
+You can install either by fetching with go and building the source
+
+	$ go get github.com/rajangdavis/osvc-rest && cd $GOPATH && go build
+
+Or downloading from the relevant architecture under the [releases link](https://github.com/rajangdavis/osvc-rest/releases)
+
+Windows Example ([using Git Bash for Windows](https://gitforwindows.org/)): 
+
+	$ curl -L -O https://github.com/rajangdavis/osvc-rest/releases/download/v1.0-beta/osvc-rest-windows-386 && chmod u+x ./osvc-rest-windows-386 && mv ./osvc-rest-windows-386 ./osvc-rest
+
+Linux Example (tested on Ubuntu 16.04.3 LTS):
+
+	$ curl -L -O https://github.com/rajangdavis/osvc-rest/releases/download/v1.0-beta/osvc-rest-linux-amd64 && chmod u+x ./osvc-rest-linux-amd64 && mv ./osvc-rest-linux-amd64 ./osvc-rest
+
+You will be able to run the executable in the following way:
+
+	$ ./osvc-rest <commands>
+
+If you want to get rid of the "./", open your .bash_profile and create the following alias:
+	
+	alias osvc-rest="~/path/to/osvc-rest"
+
+After you have saved and restarted your bash session, you can use the command as expected
+
+
+## Basic Usage
 The basic formula for this CLI is the following:
 	
 	$ osvc-rest <command to run> <something the command needs> <optional flags to change various settings> <some way to authenticate>
@@ -193,4 +221,4 @@ Instead of running multiple queries in with 1 GET request, you can run multiple 
 ## Underlying Tech and Attribution
 osvc-rest is written in [golang](https://golang.org).
 
-I borrowed the initial codebase from [here](https://github.com/dharmeshkakadia/cobra-example); it is _significantly_ different than the original.
+I started with [this initial codebase](https://github.com/dharmeshkakadia/cobra-example) and built/tested the features from there.

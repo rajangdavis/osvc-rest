@@ -23,7 +23,7 @@ func openFile(fileAttachmentPath string) string {
 
 	if fileError != nil {
 		fmt.Println(fileName)
-		fmt.Println("\033[31mError: there is something wrong with the file location you have input")
+		fmt.Println("\033[31mError: there is something wrong with the file location you have input \033[0m ")
 		os.Exit(0)
 	}
 

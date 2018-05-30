@@ -10,7 +10,7 @@ import (
 func pqueryCheck(args []string) []string {
 	queriesArray := []string{}
 	if len(args) < 2 {
-		fmt.Println("\033[31mError: Must set at least two queries")
+		fmt.Println("\033[31mError: Must set at least two queries \033[0m ")
 		os.Exit(0)
 	}
 	for i := 0; i < len(args); i++ {

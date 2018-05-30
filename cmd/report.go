@@ -14,7 +14,7 @@ var id, reportLimit, reportOffset int
 func checkReportFlags(flags *pflag.FlagSet) error {
 	interfaceAndPassword()
 	if lookupName == "" && id == 0 {
-		fmt.Println("\033[31mError: Must use either the --name or --id flag with for working with the AnalyticsReportResults object")
+		fmt.Println("\033[31mError: Must use either the --name or --id flag with for working with the AnalyticsReportResults object\033[0m ")
 		os.Exit(0)
 	}
 
