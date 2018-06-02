@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	userName, password, interfaceName, session, oauth, version, annotation, accessToken string
-	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, schema           bool
-	nextRequest                                                                         int
+	userName, password, interfaceName, session, oauth, version, annotation, accessToken  string
+	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, schema, keepAlive bool
+	nextRequest                                                                          int
 )
 
 func interfaceAndPassword() error {

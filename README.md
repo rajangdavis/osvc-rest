@@ -218,7 +218,7 @@ Instead of running multiple queries in with 1 GET request, you can run multiple 
 ## Help
 	Use "osvc-rest [command] --help" for more information about a command.
 
-## Underlying Tech and Attribution
+## Underlying Tech and Acknowledgment
 osvc-rest is written in [golang](https://golang.org).
 
-I started with [this initial codebase](https://github.com/dharmeshkakadia/cobra-example) and built/tested the features from there.
+I started with [this initial codebase (dharmeshkakadia/cobra-example)](https://github.com/dharmeshkakadia/cobra-example) and built/tested the features from there.
