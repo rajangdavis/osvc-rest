@@ -28,6 +28,11 @@ If you want to get rid of the "./", open your .bash_profile and create the follo
 
 After you have saved and restarted your bash session, you can use the command as expected
 
+## Compatibility
+
+The library is tested against Oracle Service Cloud 18A using go version 1.10 on windows/amd64
+
+All of the HTTP methods should work on any version of Oracle Service Cloud since version May 2015; however, there maybe some issues with querying items on any version before May 2016. This is because ROQL queries were not exposed via the REST API until May 2016.
 
 ## Basic Usage
 The basic formula for this CLI is the following:
