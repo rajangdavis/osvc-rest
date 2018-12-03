@@ -69,7 +69,7 @@ func init() {
 	report.Flags().StringVarP(&filters, "filters", "f", "", "Adds filters for reporting")
 	report.Flags().StringVarP(&lookupName, "name", "n", "", "Sets the lookupName of the AnalyticsReport that we wish to run")
 	report.Flags().IntVarP(&reportLimit, "limit", "l", 0, "Adds limit for reporting")
-	report.Flags().IntVarP(&reportOffset, "offset", "o", 0, "Adds and offset for reporting")
+	report.Flags().IntVarP(&reportOffset, "offset", "", 0, "Adds and offset for reporting")
 	report.Flags().IntVarP(&id, "id", "", 0, "Sets the id of the AnalyticsReport that we wish to run")
 	RootCmd.AddCommand(report)
 }

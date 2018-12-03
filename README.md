@@ -53,7 +53,7 @@ The basic commands come in the following flavors:
 Here are the _spicier_ (more advanced) commands:
 
 1. [Bulk Delete](#bulk-delete)
-2. [Running multiple ROQL Queries in parallel](#running-multiple-roql-queries-in-parallel)
+2. [Running multiple ROQL Queries concurrently](#running-multiple-roql-queries-concurrently)
 3. [Performing Session Authentication](#performing-session-authentication)
 
 ## Authentication:
@@ -73,7 +73,7 @@ Use the following flags to authenticate
 
 ## Performing Session Authentication
 
-1. Create a custom script with the following code:
+1. Create a custom script with the following code and place in the "Custom Scripts" folder in the File Manager:
 
 ```php
 <?php
@@ -201,10 +201,10 @@ Here is an example of the how to use the Bulk Delete feature:
 
 	$ osvc-rest query "DELETE from incidents limit 1000" "DELETE from incidents limit 1000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE --demosite -v latest -a "Testing bulk delete multiple requests"
 
-## Running multiple ROQL Queries in parallel
+## Running multiple ROQL Queries concurrently
 Instead of running multiple queries in with 1 GET request, you can run multiple GET requests and combine the results
 
-	$ osvc-rest query --parallel "SELECT * FROM INCIDENTS LIMIT 20000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 20000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 40000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 60000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 80000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE -v latest -a "Fetching a ton of incidents info"
+	$ osvc-rest query --concurrent "SELECT * FROM INCIDENTS LIMIT 20000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 20000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 40000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 60000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 80000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE -v latest -a "Fetching a ton of incidents info"
 
 
 ## Optional Flags:

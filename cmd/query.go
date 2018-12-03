@@ -60,6 +60,6 @@ var query = &cobra.Command{
 }
 
 func init() {
-	query.Flags().BoolVarP(&parallelRequest, "parallel", "l", false, "Runs queries in parallel")
+	query.Flags().BoolVarP(&parallelRequest, "concurrent", "l", false, "Runs queries in concurrently")
 	RootCmd.AddCommand(query)
 }
