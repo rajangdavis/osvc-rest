@@ -31,6 +31,7 @@ func init() {
 	RootCmd.PersistentFlags().StringVarP(&session, "session", "s", "", "Sets the session token for session authentication")
 	RootCmd.PersistentFlags().StringVarP(&oauth, "oauth", "o", "", "Sets the OAuth token for OAuth authentication")
 	RootCmd.PersistentFlags().StringVarP(&interfaceName, "interface", "i", "", "Oracle Service Cloud Interface to connect with")
+	RootCmd.PersistentFlags().StringVarP(&vhost, "vhost", "", "", "Oracle Service Cloud virtual host to connect with")
 
 	RootCmd.PersistentFlags().BoolVarP(&demoSite, "demosite", "", false, "Change the domain from 'custhelp' to 'rightnowdemo'")
 	RootCmd.PersistentFlags().BoolVarP(&suppressRules, "suppress-rules", "", false, "Adds a header to suppress business rules")

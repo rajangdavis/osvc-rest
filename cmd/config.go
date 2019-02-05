@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	userName, password, interfaceName, session, oauth, version, annotation, accessToken  string
+	userName, password, interfaceName, session, oauth, version, annotation, accessToken, vhost  string
 	noSslVerify, suppressRules, demoSite, excludeNull, utcTime, debug, schema, keepAlive bool
 	nextRequest                                                                          int
 )
@@ -20,8 +20,8 @@ func interfaceAndPassword() error {
 }
 
 func checkInterface() error {
-	if interfaceName == "" {
-		fmt.Println("\033[31mError: Must set an interface to connect with. \033[0m ")
+	if interfaceName == ""  && vhost == ""{
+		fmt.Println("\033[31mError: Must set an interface or vhost to connect with. \033[0m ")
 		os.Exit(0)
 	}
 	return nil
@@ -55,9 +55,11 @@ func checkAnnotation() error {
 func setDomain() string {
 	domain := ""
 	if demoSite == true {
-		domain = "rightnowdemo"
-	} else {
-		domain = "custhelp"
+		domain = interfaceName + ".rightnowdemo.com"
+	}else if vhost != ""{
+		domain = vhost
+	}else {
+		domain = interfaceName + ".custhelp.com"
 	}
 	return domain
 }

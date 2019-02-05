@@ -12,7 +12,7 @@ import (
 )
 
 func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.Request, error, string) {
-	var baseUrl = "https://" + interfaceName + "." + setDomain() + ".com/services/rest/connect/" + version + "/"
+	var baseUrl = "https://" + setDomain() + "/services/rest/connect/" + version + "/"
 	var finalUrl = baseUrl + strings.Replace(requestUrl, " ", "%20", -1)
 
 	var req *http.Request

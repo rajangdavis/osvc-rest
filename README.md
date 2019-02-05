@@ -60,6 +60,7 @@ Here are the _spicier_ (more advanced) commands:
 Use the following flags to authenticate
 
 	  -i, --interface (string) Oracle Service Cloud Interface to connect with
+	  --vhost (string)  Oracle Service Cloud virtual host to connect with
 	  
 	  Basic Authentication
 	  -u, --username (string)  Username to use for basic authentication
