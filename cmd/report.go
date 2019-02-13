@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"encoding/json"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"os"
@@ -48,9 +49,12 @@ func runReport(cmd *cobra.Command, args []string) error {
 
 	jsonData := bytes.NewBuffer(identifier)
 
-	reportUrl := "analyticsReportResults"
-	bodyBytes := connect("POST", reportUrl, jsonData)
-	normalizeReport(bodyBytes)
+	var results []map[string]interface{}
+	bodyBytes := connect("POST","analyticsReportResults", jsonData)
+
+	finalResults := normalizeReport(bodyBytes, identifier, &results)
+	jsonDataFinal, _ := json.MarshalIndent(finalResults, "", "  ")
+	fmt.Fprintf(os.Stdout, "%s", jsonDataFinal)
 	return nil
 }
 

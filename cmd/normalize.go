@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"github.com/buger/jsonparser"
 	"os"
@@ -44,12 +44,11 @@ func iterateThroughRows(item []byte, arrayToMod [][]map[string]interface{}) [][]
 	return arrayToMod
 }
 
-func normalizeReport(byteData []byte) {
+func normalizeReport(byteData []byte, jsonString []byte, results *[]map[string]interface{})  []map[string]interface{} {
 
 	columnNames, _, _, _ := jsonparser.Get(byteData, "columnNames")
 	rows, _, _, _ := jsonparser.Get(byteData, "rows")
-
-	var results [][]map[string]interface{}
+	
 	var itemArray []map[string]interface{}
 
 	jsonparser.ArrayEach(rows, func(row []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -78,9 +77,21 @@ func normalizeReport(byteData []byte) {
 		itemArray = append(itemArray, resultsHash)
 	})
 
-	results = append(results, itemArray)
-	jsonData, _ := json.MarshalIndent(results[0], "", "  ")
-	fmt.Fprintf(os.Stdout, "%s", jsonData)
+	for i := 0; i < len(itemArray); i++ {
+		*results = append(*results, itemArray[i])
+	}
+
+	if(len(itemArray) == 10000 && len(*results) < 1000000){
+		offset, _, _, _ := jsonparser.Get(jsonString, "offset")
+		intOffset, _ := strconv.ParseInt(string(offset), 10, 64)
+		intOffset = intOffset + 10000
+		jsonString, _ = jsonparser.Set(jsonString, []byte(strconv.FormatInt(intOffset, 10)), "offset")
+		updatedJsonData := bytes.NewBuffer(jsonString)
+		bodyBytes := connect("POST", "analyticsReportResults", updatedJsonData)
+		return normalizeReport(bodyBytes, jsonString, results)
+	}else{
+		return *results
+	}
 
 }
 

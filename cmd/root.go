@@ -42,6 +42,5 @@ func init() {
 	RootCmd.PersistentFlags().BoolVarP(&utcTime, "utc-time", "t", false, "Adds a custom header to return results using Coordinated Universal Time (UTC) format for time (Supported on November 2016+)")
 	RootCmd.PersistentFlags().BoolVarP(&schema, "schema", "", false, "Sets 'Accept' header to 'application/schema+json'")
 	RootCmd.PersistentFlags().BoolVarP(&debug, "debug", "", false, "Prints request headers for debugging")
-	RootCmd.PersistentFlags().StringVarP(&accessToken, "access-token", "", "", "Adds an access token to ensure quality of service")
 	RootCmd.PersistentFlags().IntVarP(&nextRequest, "next-request", "", 0, "Number of milliseconds before another HTTP request can be made with the associated access-token; this is an anti-DDoS measure")
 }

@@ -74,7 +74,7 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 func connect(requestType string, requestUrl string, jsonData io.Reader) []byte {
 	checkAnnotation()
 	var client = checkSSL()
-
+	
 	req, err, url := buildRequest(requestType, requestUrl, jsonData)
 
 	rs, err := client.Do(req)
@@ -84,7 +84,10 @@ func connect(requestType string, requestUrl string, jsonData io.Reader) []byte {
 		fmt.Println("\033[31mError: Could not connect to site '" + url + "' \033[0m ")
 		os.Exit(1)
 	}
+
 	defer rs.Body.Close()
+	
+	accessToken = rs.Header.Get("Osvc-Crest-Api-Access-Token")
 
 	if (requestType == "PATCH" || requestType == "DELETE") && rs.StatusCode == 200 {
 		os.Exit(0)
