@@ -187,7 +187,9 @@ Runs one or more ROQL queries and returns parsed results
 	$ osvc-rest query "SELECT * FROM INCIDENTS LIMIT 100" "SELECT * FROM SERVICEPRODUCTS LIMIT 100" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 ## Running Reports
-Runs an analytics report and returns parsed results
+Runs an analytics report and returns parsed results.
+
+Will return up to 1,000,000 records at a time.
 
 	Report (without filters) Example:
 	$ osvc-rest report --id 176 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
