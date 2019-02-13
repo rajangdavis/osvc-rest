@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-var lookupName, filters string
+var lookupName, filters, csvName string
 var id, reportLimit, reportOffset int
 
 func checkReportFlags(flags *pflag.FlagSet) error {
@@ -52,9 +52,13 @@ func runReport(cmd *cobra.Command, args []string) error {
 	var results []map[string]interface{}
 	bodyBytes := connect("POST","analyticsReportResults", jsonData)
 
-	finalResults := normalizeReport(bodyBytes, identifier, &results)
-	jsonDataFinal, _ := json.MarshalIndent(finalResults, "", "  ")
-	fmt.Fprintf(os.Stdout, "%s", jsonDataFinal)
+	if csvName != ""{
+		csvReport(bodyBytes, csvName)
+	}else{
+		finalResults := normalizeReport(bodyBytes, identifier, &results)
+		jsonDataFinal, _ := json.MarshalIndent(finalResults, "", "  ")
+		fmt.Fprintf(os.Stdout, "%s", jsonDataFinal)
+	}
 	return nil
 }
 
@@ -72,6 +76,7 @@ var report = &cobra.Command{
 func init() {
 	report.Flags().StringVarP(&filters, "filters", "f", "", "Adds filters for reporting")
 	report.Flags().StringVarP(&lookupName, "name", "n", "", "Sets the lookupName of the AnalyticsReport that we wish to run")
+	report.Flags().StringVarP(&csvName, "csv", "", "", "Exports to CSV to the file name provided")
 	report.Flags().IntVarP(&reportLimit, "limit", "l", 0, "Adds limit for reporting")
 	report.Flags().IntVarP(&reportOffset, "offset", "", 0, "Adds and offset for reporting")
 	report.Flags().IntVarP(&id, "id", "", 0, "Sets the id of the AnalyticsReport that we wish to run")

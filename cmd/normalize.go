@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"encoding/csv"
 	"github.com/buger/jsonparser"
 	"os"
 	"strconv"
@@ -42,6 +43,43 @@ func iterateThroughRows(item []byte, arrayToMod [][]map[string]interface{}) [][]
 
 	arrayToMod = append(arrayToMod, itemArray)
 	return arrayToMod
+}
+
+func csvReport(byteData []byte, csvName string){
+	file, _ := os.Create(csvName + ".csv")
+	defer file.Close()
+
+    writer := csv.NewWriter(file)
+    defer writer.Flush()
+	
+	var stringColumns  []string
+
+	columnNames, _, _, _ := jsonparser.Get(byteData, "columnNames")
+	
+	jsonparser.ArrayEach(columnNames, func(column []byte, dataType jsonparser.ValueType, offset int, err error) {
+		parsedColumn, _ := jsonparser.ParseString(column)
+		stringColumns = append(stringColumns, parsedColumn)
+	})
+	writer.Write(stringColumns)
+	
+	rows, _, _, _ := jsonparser.Get(byteData, "rows")
+
+	rowCount := 0
+	
+	jsonparser.ArrayEach(rows, func(row []byte, dataType jsonparser.ValueType, offset int, err error) {
+		var stringRows []string
+		jsonparser.ArrayEach(row, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
+			parsedRow, _ := jsonparser.ParseString(value)
+			stringRows = append(stringRows, parsedRow)
+		})
+		rowCount = rowCount + 1
+		// TODO 
+
+		// Change to recursive function
+		// Keep writing to file
+		writer.Write(stringRows)
+	})
+
 }
 
 func normalizeReport(byteData []byte, jsonString []byte, results *[]map[string]interface{})  []map[string]interface{} {
