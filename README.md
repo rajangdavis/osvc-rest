@@ -211,7 +211,6 @@ Instead of running multiple queries in with 1 GET request, you can run multiple 
 
 
 ## Optional Flags:
-	    --access-token (string) 	Adds an access token to ensure quality of service
 	-a, --annotate (string)     	Adds a custom header that adds an annotation (CCOM version must be set to "v1.4" or "latest"); limited to 40 characters
 	    --debug                 	Prints request headers for debugging
 	    --demosite              	Change the domain from 'custhelp' to 'rightnowdemo'
