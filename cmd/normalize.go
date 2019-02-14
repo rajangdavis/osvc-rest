@@ -46,7 +46,7 @@ func iterateThroughRows(item []byte, arrayToMod [][]map[string]interface{}) [][]
 	return arrayToMod
 }
 
-func csvReport(byteData []byte, jsonString []byte, csvName string, printColumns bool, totalRowCount int){
+func csvReport(byteData []byte, jsonString []byte, file *os.File, printColumns bool, totalRowCount int){
 
     writer := csv.NewWriter(file)
     defer writer.Flush()
@@ -66,7 +66,7 @@ func csvReport(byteData []byte, jsonString []byte, csvName string, printColumns 
 	rows, _, _, _ := jsonparser.Get(byteData, "rows")
 
 	rowCount := 0
-	
+	var currentSet [][]string
 	jsonparser.ArrayEach(rows, func(row []byte, dataType jsonparser.ValueType, offset int, err error) {
 		var stringRows  []string
 		jsonparser.ArrayEach(row, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -74,17 +74,20 @@ func csvReport(byteData []byte, jsonString []byte, csvName string, printColumns 
 			if(parsedVal == "null"){
 				parsedVal = ""
 			}
-
-			// parsedVal = strings.Replace(parsedVal, "\r", " ", -1)
-			// parsedVal = strings.Replace(parsedVal, "\n", " ", -1)
-			// parsedVal = strings.Replace(parsedVal, ",", " ", -1)
 			stringRows = append(stringRows, parsedVal)
 
 		})
 		rowCount = rowCount + 1
-		writer.Write(stringRows)
+		currentSet = append(currentSet, stringRows)		
 	})
+	writer.WriteAll(currentSet)
 
+	// TODO clean this up
+	// Do some fixes for limits vs total
+		// Set limit if total is less than 10000
+		// Add a limit if the difference of the offset and total is  less than 10000
+	// Add total flag to documentation
+	// Add some output for progress
 	fmt.Fprintf(os.Stdout, "%s", "totalRowCount: ")
 	fmt.Fprintf(os.Stdout, "%s", totalRowCount)
 	fmt.Fprintf(os.Stdout, "%s", "\n")
