@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	// "strings"
+	"sync"
 	"bytes"
 	"fmt"
 	"encoding/csv"
@@ -9,6 +9,8 @@ import (
 	"os"
 	"strconv"
 )
+
+var wg sync.WaitGroup
 
 func iterateThroughRows(item []byte, arrayToMod [][]map[string]interface{}) [][]map[string]interface{} {
 	val := item
@@ -80,33 +82,32 @@ func csvReport(byteData []byte, jsonString []byte, file *os.File, printColumns b
 		rowCount = rowCount + 1
 		currentSet = append(currentSet, stringRows)		
 	})
-	writer.WriteAll(currentSet)
 
-	// TODO clean this up
-	// Do some fixes for limits vs total
-		// Set limit if total is less than 10000
-		// Add a limit if the difference of the offset and total is  less than 10000
-	// Add total flag to documentation
-	// Add some output for progress
-	fmt.Fprintf(os.Stdout, "%s", "totalRowCount: ")
-	fmt.Fprintf(os.Stdout, "%s", totalRowCount)
-	fmt.Fprintf(os.Stdout, "%s", "\n")
+	wg.Add(1)
+	go func(){
+		defer wg.Done()
+		writer.WriteAll(currentSet)
+	}()
 
-	fmt.Fprintf(os.Stdout, "%s", "reportTotal: ")
-	fmt.Fprintf(os.Stdout, "%s", reportTotal)
-	fmt.Fprintf(os.Stdout, "%s", "\n")
-
-	file.Close()
-
-	if rowCount == 10000 && totalRowCount < reportTotal{
+	if rowCount == reportLimit && totalRowCount < reportTotal{
 		offset, _, _, _ := jsonparser.Get(jsonString, "offset")
 		intOffset, _ := strconv.ParseInt(string(offset), 10, 64)
-		intOffset = intOffset + 10000
+		intOffset = intOffset + int64(reportLimit)
 		jsonString, _ = jsonparser.Set(jsonString, []byte(strconv.FormatInt(intOffset, 10)), "offset")
+
+
+		if (reportTotal - reportLimit) < reportLimit && (reportTotal - reportLimit) > 0 {
+			totalDiff := int64(reportTotal - reportLimit)
+			intTotal := strconv.FormatInt(totalDiff, 10)
+			jsonString, _ = jsonparser.Set(jsonString, []byte(intTotal), "limit")
+		}
+
 		updatedJsonData := bytes.NewBuffer(jsonString)
 		bodyBytes := connect("POST", "analyticsReportResults", updatedJsonData)
 		reopenedFile, _ := os.OpenFile(file.Name(), os.O_APPEND, 0600)
-		csvReport(bodyBytes, jsonString, reopenedFile, false, (totalRowCount + 10000))
+		csvReport(bodyBytes, jsonString, reopenedFile, false, (totalRowCount + reportLimit))
+	}else{
+		wg.Wait()
 	}
 
 }
@@ -148,10 +149,10 @@ func normalizeReport(byteData []byte, jsonString []byte, results *[]map[string]i
 		*results = append(*results, itemArray[i])
 	}
 
-	if(len(itemArray) == 10000 && len(*results) < reportTotal){
+	if(len(itemArray) == reportLimit && len(*results) < reportTotal){
 		offset, _, _, _ := jsonparser.Get(jsonString, "offset")
 		intOffset, _ := strconv.ParseInt(string(offset), 10, 64)
-		intOffset = intOffset + 10000
+		intOffset = intOffset + int64(reportLimit)
 		jsonString, _ = jsonparser.Set(jsonString, []byte(strconv.FormatInt(intOffset, 10)), "offset")
 		updatedJsonData := bytes.NewBuffer(jsonString)
 		bodyBytes := connect("POST", "analyticsReportResults", updatedJsonData)

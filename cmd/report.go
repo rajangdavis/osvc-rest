@@ -41,7 +41,9 @@ func runReport(cmd *cobra.Command, args []string) error {
 		str = fmt.Sprintf(`{"lookupName":%q}`, lookupName)
 	}
 
-	if reportLimit > 0 {
+	if reportTotal < 10000{
+		str = str[:len(str)-1] + fmt.Sprintf(`, "limit" : %d}`, reportTotal)
+	}else{
 		str = str[:len(str)-1] + fmt.Sprintf(`, "limit" : %d}`, reportLimit)
 	}
 
@@ -51,10 +53,6 @@ func runReport(cmd *cobra.Command, args []string) error {
 
 	if filters != "" {
 		str = str[:len(str)-1] + fmt.Sprintf(`, "filters" : %s}`, filters)
-	}
-	// Set a maximum if one isn't already set
-	if reportTotal == 0{
-		reportTotal = 1000000
 	}
 
 	identifier = []byte(str)
@@ -92,9 +90,9 @@ func init() {
 	report.Flags().StringVarP(&filters, "filters", "f", "", "Adds filters for reporting")
 	report.Flags().StringVarP(&lookupName, "name", "n", "", "Sets the lookupName of the AnalyticsReport that we wish to run")
 	report.Flags().StringVarP(&csvName, "csv", "", "", "Exports to CSV to the file name provided")
-	report.Flags().IntVarP(&reportLimit, "limit", "l", 0, "Adds limit for reporting")
+	report.Flags().IntVarP(&reportLimit, "limit", "l", 10000, "Adds limit for reporting")
 	report.Flags().IntVarP(&reportOffset, "offset", "", 0, "Adds and offset for reporting")
-	report.Flags().IntVarP(&reportTotal, "total", "", 0, "Creates a maximum number of rows")
+	report.Flags().IntVarP(&reportTotal, "total", "", 1500000, "Creates a maximum number of rows")
 	report.Flags().IntVarP(&id, "id", "", 0, "Sets the id of the AnalyticsReport that we wish to run")
 	RootCmd.AddCommand(report)
 }

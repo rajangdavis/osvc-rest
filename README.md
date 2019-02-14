@@ -55,6 +55,7 @@ Here are the _spicier_ (more advanced) commands:
 1. [Bulk Delete](#bulk-delete)
 2. [Running multiple ROQL Queries concurrently](#running-multiple-roql-queries-concurrently)
 3. [Performing Session Authentication](#performing-session-authentication)
+3. [Exporting Bulk Reports (to JSON or CSV)](#exporting-bulk-reports)
 
 ## Authentication:
 Use the following flags to authenticate
@@ -189,13 +190,19 @@ Runs one or more ROQL queries and returns parsed results
 ## Running Reports
 Runs an analytics report and returns parsed results.
 
-Will return up to 1,000,000 records at a time.
+Will return up to 1,500,000 records at a time.
 
 	Report (without filters) Example:
 	$ osvc-rest report --id 176 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
 
 	Report (with filters and limiting) Example:
-	$ osvc-rest report --id 176 --limit 10 --filters '[{"name":"search_ex","values":"returns"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+	$ osvc-rest report --id 176 --total 10 --filters '[{"name":"search_ex","values":"returns"}]' -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+	Report (with batching) Example:
+	$ osvc-rest report --id 176 --limit 10 -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE
+
+	Bulk Report Export to CSV Example:
+	$ osvc-rest report --id 100562 --utc --csv "threads_dump" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE -v latest -a "Dumping Threads" --debug
 
 ## Bulk Delete
 This CLI provides a very simple interface to use the Bulk Delete feature within the latest versions of the REST API. Before you can use this feature, make sure that you have the [correct permissions set up for your profile](https://docs.oracle.com/en/cloud/saas/service/18b/cxsvc/c_osvc_bulk_delete.html#BulkDelete-10689704__concept-212-37785F91).
@@ -208,6 +215,9 @@ Here is an example of the how to use the Bulk Delete feature:
 Instead of running multiple queries in with 1 GET request, you can run multiple GET requests and combine the results
 
 	$ osvc-rest query --concurrent "SELECT * FROM INCIDENTS LIMIT 20000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 20000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 40000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 60000" "SELECT * FROM INCIDENTS Limit 20000 OFFSET 80000" -u $OSC_ADMIN -p $OSC_PASSWORD -i $OSC_SITE -v latest -a "Fetching a ton of incidents info"
+
+## Exporting Bulk Reports
+
 
 
 ## Optional Flags:
