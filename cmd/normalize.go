@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	// "strings"
 	"bytes"
 	"fmt"
 	"encoding/csv"
@@ -45,40 +46,65 @@ func iterateThroughRows(item []byte, arrayToMod [][]map[string]interface{}) [][]
 	return arrayToMod
 }
 
-func csvReport(byteData []byte, csvName string){
-	file, _ := os.Create(csvName + ".csv")
-	defer file.Close()
+func csvReport(byteData []byte, jsonString []byte, csvName string, printColumns bool, totalRowCount int){
 
     writer := csv.NewWriter(file)
     defer writer.Flush()
-	
-	var stringColumns  []string
 
-	columnNames, _, _, _ := jsonparser.Get(byteData, "columnNames")
-	
-	jsonparser.ArrayEach(columnNames, func(column []byte, dataType jsonparser.ValueType, offset int, err error) {
-		parsedColumn, _ := jsonparser.ParseString(column)
-		stringColumns = append(stringColumns, parsedColumn)
-	})
-	writer.Write(stringColumns)
+    if printColumns == true{
+		var stringColumns  []string
+
+		columnNames, _, _, _ := jsonparser.Get(byteData, "columnNames")
+		
+		jsonparser.ArrayEach(columnNames, func(column []byte, dataType jsonparser.ValueType, offset int, err error) {
+			parsedColumn, _ := jsonparser.ParseString(column)
+			stringColumns = append(stringColumns, parsedColumn)
+		})
+		writer.Write(stringColumns)	
+    }
 	
 	rows, _, _, _ := jsonparser.Get(byteData, "rows")
 
 	rowCount := 0
 	
 	jsonparser.ArrayEach(rows, func(row []byte, dataType jsonparser.ValueType, offset int, err error) {
-		var stringRows []string
+		var stringRows  []string
 		jsonparser.ArrayEach(row, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
-			parsedRow, _ := jsonparser.ParseString(value)
-			stringRows = append(stringRows, parsedRow)
+			parsedVal, _ := jsonparser.ParseString(value)
+			if(parsedVal == "null"){
+				parsedVal = ""
+			}
+
+			// parsedVal = strings.Replace(parsedVal, "\r", " ", -1)
+			// parsedVal = strings.Replace(parsedVal, "\n", " ", -1)
+			// parsedVal = strings.Replace(parsedVal, ",", " ", -1)
+			stringRows = append(stringRows, parsedVal)
+
 		})
 		rowCount = rowCount + 1
-		// TODO 
-
-		// Change to recursive function
-		// Keep writing to file
 		writer.Write(stringRows)
 	})
+
+	fmt.Fprintf(os.Stdout, "%s", "totalRowCount: ")
+	fmt.Fprintf(os.Stdout, "%s", totalRowCount)
+	fmt.Fprintf(os.Stdout, "%s", "\n")
+
+	fmt.Fprintf(os.Stdout, "%s", "reportTotal: ")
+	fmt.Fprintf(os.Stdout, "%s", reportTotal)
+	fmt.Fprintf(os.Stdout, "%s", "\n")
+
+	file.Close()
+
+	if rowCount == 10000 && totalRowCount < reportTotal{
+		offset, _, _, _ := jsonparser.Get(jsonString, "offset")
+		intOffset, _ := strconv.ParseInt(string(offset), 10, 64)
+		intOffset = intOffset + 10000
+		jsonString, _ = jsonparser.Set(jsonString, []byte(strconv.FormatInt(intOffset, 10)), "offset")
+		updatedJsonData := bytes.NewBuffer(jsonString)
+		bodyBytes := connect("POST", "analyticsReportResults", updatedJsonData)
+		reopenedFile, _ := os.OpenFile(file.Name(), os.O_APPEND, 0600)
+		csvReport(bodyBytes, jsonString, reopenedFile, false, (totalRowCount + 10000))
+	}
 
 }
 
@@ -119,7 +145,7 @@ func normalizeReport(byteData []byte, jsonString []byte, results *[]map[string]i
 		*results = append(*results, itemArray[i])
 	}
 
-	if(len(itemArray) == 10000 && len(*results) < 1000000){
+	if(len(itemArray) == 10000 && len(*results) < reportTotal){
 		offset, _, _, _ := jsonparser.Get(jsonString, "offset")
 		intOffset, _ := strconv.ParseInt(string(offset), 10, 64)
 		intOffset = intOffset + 10000

@@ -10,7 +10,7 @@ import (
 )
 
 var lookupName, filters, csvName string
-var id, reportLimit, reportOffset int
+var id, reportLimit, reportOffset, reportTotal int
 
 func checkReportFlags(flags *pflag.FlagSet) error {
 	interfaceAndPassword()
@@ -20,6 +20,14 @@ func checkReportFlags(flags *pflag.FlagSet) error {
 	}
 
 	return nil
+}
+
+func limitCheck(limit int) int{
+	if limit < 10000{
+		return limit
+	}else{
+		return 10000
+	}
 }
 
 func runReport(cmd *cobra.Command, args []string) error {
@@ -44,6 +52,10 @@ func runReport(cmd *cobra.Command, args []string) error {
 	if filters != "" {
 		str = str[:len(str)-1] + fmt.Sprintf(`, "filters" : %s}`, filters)
 	}
+	// Set a maximum if one isn't already set
+	if reportTotal == 0{
+		reportTotal = 1000000
+	}
 
 	identifier = []byte(str)
 
@@ -53,7 +65,10 @@ func runReport(cmd *cobra.Command, args []string) error {
 	bodyBytes := connect("POST","analyticsReportResults", jsonData)
 
 	if csvName != ""{
-		csvReport(bodyBytes, csvName)
+		var limit = limitCheck(reportTotal)
+		file, _ := os.OpenFile(csvName + ".csv", os.O_CREATE|os.O_APPEND,  os.FileMode(0777))
+		defer file.Close()
+		csvReport(bodyBytes, identifier, file, true, limit)
 	}else{
 		finalResults := normalizeReport(bodyBytes, identifier, &results)
 		jsonDataFinal, _ := json.MarshalIndent(finalResults, "", "  ")
@@ -79,6 +94,7 @@ func init() {
 	report.Flags().StringVarP(&csvName, "csv", "", "", "Exports to CSV to the file name provided")
 	report.Flags().IntVarP(&reportLimit, "limit", "l", 0, "Adds limit for reporting")
 	report.Flags().IntVarP(&reportOffset, "offset", "", 0, "Adds and offset for reporting")
+	report.Flags().IntVarP(&reportTotal, "total", "", 0, "Creates a maximum number of rows")
 	report.Flags().IntVarP(&id, "id", "", 0, "Sets the id of the AnalyticsReport that we wish to run")
 	RootCmd.AddCommand(report)
 }
