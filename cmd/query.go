@@ -34,6 +34,7 @@ func runQuery(cmd *cobra.Command, args []string) error {
 
 	if parallelRequest == true {
 		printParallelQueries(args)
+		return nil
 	}
 
 	queryFinal := queryCheck(args)
