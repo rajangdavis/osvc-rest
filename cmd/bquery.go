@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	// "net/url"
-	// "encoding/json"
+	"encoding/json"
 	"strconv"
 	"strings"
 	"fmt"
@@ -68,14 +67,29 @@ func runBulkQuery(cmd *cobra.Command, args []string) error {
 		queriesToRun = append(queriesToRun, queryToFetch)
 	}
 
-	// var lowerBound int
+	var additionalQuery, lowerBound int
 
-	// remainderQueries := numQueries - (numQueries )
+	remainderQueries := len(queriesToRun) % numQueries
+	if (remainderQueries > 0){
+		additionalQuery = 1
+	}
 
-	fmt.Fprintf(os.Stdout, "%s", numberOfRequests)
+	numberOfBatchedQueries := ((len(queriesToRun) - remainderQueries)/numQueries) + additionalQuery
 
+	upperBound := numberOfBatchedQueries * numQueries
 
-	// runParallelQueries(queriesToRun[lowerBound:numQueries])
+	for i := 0; i < numberOfBatchedQueries; i++ {
+		innerUpperBound := lowerBound + numQueries
+		if(innerUpperBound > upperBound){
+			innerUpperBound = (upperBound - 1)
+		}
+		currentQuerySet := queriesToRun[lowerBound:innerUpperBound]
+		// finalResults := runParallelQueries(currentQuerySet)
+		// jsonData, _ := json.MarshalIndent(finalResults, "", "  ")
+		jsonData, _ := json.MarshalIndent(currentQuerySet, "", "  ")
+		fmt.Fprintf(os.Stdout, "%s", jsonData)
+		lowerBound = lowerBound + (numQueries) + 1
+	}
 
 	return nil
 }
