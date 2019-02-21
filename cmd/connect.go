@@ -98,7 +98,7 @@ func connect(requestType string, requestUrl string, jsonData io.Reader) []byte {
 	if requestType == "OPTIONS" {
 		responseDump, err := httputil.DumpResponse(rs, true)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Fprintf(os.Stderr, "%s", err)
 		}
 		bodyBytes = responseDump
 	} else {
@@ -106,7 +106,7 @@ func connect(requestType string, requestUrl string, jsonData io.Reader) []byte {
 	}
 
 	if err != nil {
-		panic(err)
+		fmt.Fprintf(os.Stderr, "%s", err)
 	}
 
 	return bodyBytes

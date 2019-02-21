@@ -68,7 +68,7 @@ func runBulkQuery(cmd *cobra.Command, args []string) error {
 	var queriesToRun []string
 
 	for i := 0; i < int(numberOfRequests); i++ {
-		queryToFetch := "USE REPORT; SELECT " + queryToCount + " FROM " + bulkTableName + " LIMIT " + strconv.Itoa(batchCount) + " OFFSET " + strconv.Itoa(batchCount * i)
+		queryToFetch := "SELECT " + queryToCount + " FROM " + bulkTableName + " LIMIT " + strconv.Itoa(batchCount) + " OFFSET " + strconv.Itoa(batchCount * i)
 		queriesToRun = append(queriesToRun, queryToFetch)
 	}
 
@@ -79,8 +79,9 @@ func runBulkQuery(cmd *cobra.Command, args []string) error {
 	numberOfBatchedQueries := ((len(queriesToRun) - remainderQueries)/numQueries)
 
 	upperBound := numberOfBatchedQueries * numQueries
-	var finalResults = make([]map[string]interface{}, 0)
 
+	var finalResults = make([]map[string]interface{}, 0)
+	
 	for i := 0; i < numberOfBatchedQueries; i++ {
 
 		innerUpperBound := lowerBound + numQueries
