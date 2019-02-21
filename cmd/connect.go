@@ -65,7 +65,7 @@ func buildRequest(method string, requestUrl string, jsonData io.Reader) (*http.R
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println(string(requestDump))
+		fmt.Fprintf(os.Stderr, "%s", requestDump)
 	}
 
 	return req, err, baseUrl

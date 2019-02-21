@@ -58,38 +58,54 @@ func runBulkQuery(cmd *cobra.Command, args []string) error {
 	fmt.Fprintf(os.Stderr, "%s", "\nFetching " + strconv.Itoa(int(maxValue)) + " rows\n\n")
 
 	leftOver := maxValue % int64(batchCount)
-	numberOfRequests := (maxValue - leftOver)/int64(batchCount)	
+	var numberOfRequests int64
+	if leftOver > 0{
+		numberOfRequests = ((maxValue - leftOver)/int64(batchCount) + 1)
+	}else{
+		numberOfRequests = (maxValue - leftOver)/int64(batchCount)
+	}
 
 	var queriesToRun []string
 
 	for i := 0; i < int(numberOfRequests); i++ {
-		queryToFetch := "SELECT " + queryToCount + " FROM " + bulkTableName + " LIMIT " + strconv.Itoa(batchCount) + " OFFSET " + strconv.Itoa(10000 * i)
+		queryToFetch := "USE REPORT; SELECT " + queryToCount + " FROM " + bulkTableName + " LIMIT " + strconv.Itoa(batchCount) + " OFFSET " + strconv.Itoa(batchCount * i)
 		queriesToRun = append(queriesToRun, queryToFetch)
 	}
 
-	var additionalQuery, lowerBound int
+	var lowerBound int
 
 	remainderQueries := len(queriesToRun) % numQueries
-	if (remainderQueries > 0){
-		additionalQuery = 1
-	}
 
-	numberOfBatchedQueries := ((len(queriesToRun) - remainderQueries)/numQueries) + additionalQuery
+	numberOfBatchedQueries := ((len(queriesToRun) - remainderQueries)/numQueries)
 
 	upperBound := numberOfBatchedQueries * numQueries
+	var finalResults = make([]map[string]interface{}, 0)
 
 	for i := 0; i < numberOfBatchedQueries; i++ {
+
 		innerUpperBound := lowerBound + numQueries
+
+		var currentQuerySet []string
+
 		if(innerUpperBound > upperBound){
-			innerUpperBound = (upperBound - 1)
+			currentQuerySet = queriesToRun[lowerBound:]
+		}else{
+			currentQuerySet = queriesToRun[lowerBound:innerUpperBound]
 		}
-		currentQuerySet := queriesToRun[lowerBound:innerUpperBound]
-		// finalResults := runParallelQueries(currentQuerySet)
-		// jsonData, _ := json.MarshalIndent(finalResults, "", "  ")
-		jsonData, _ := json.MarshalIndent(currentQuerySet, "", "  ")
-		fmt.Fprintf(os.Stdout, "%s", jsonData)
-		lowerBound = lowerBound + (numQueries) + 1
+
+		results := runParallelQueries(currentQuerySet)
+
+		for _ = range currentQuerySet {
+			result := <-results
+			for i := 0; i < len(result[0]); i++ {
+				finalResults = append(finalResults, result[0][i])
+			}
+		}
+
+		lowerBound = lowerBound + (numQueries)
 	}
+	jsonData, _ := json.MarshalIndent(finalResults, "", "  ")
+	fmt.Fprintf(os.Stdout, "%s", jsonData)
 
 	return nil
 }
@@ -108,6 +124,6 @@ func init() {
 	bquery.Flags().StringVarP(&queryToCount, "select", "", "", "The main query that is getting bulk requests performed on")
 	bquery.Flags().StringVarP(&bulkTableName, "from", "", "", "The table that is getting queried against")
 	bquery.Flags().IntVarP(&batchCount, "batch", "", 10000, "How many rows to batch per request")
-	bquery.Flags().IntVarP(&numQueries, "qcount", "", 4, "How many queries to run in parallel")
+	bquery.Flags().IntVarP(&numQueries, "group", "", 4, "How many queries to run in parallel")
 	RootCmd.AddCommand(bquery)
 }
